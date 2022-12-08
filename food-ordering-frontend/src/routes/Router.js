@@ -5,7 +5,7 @@ import {Login} from "../pages/Login";
 import {Register} from "../pages/Register";
 
 
-const Routers = () => {
+export const Router = () => {
     return (
         <BrowserRouter>
             <Routes>
@@ -13,10 +13,10 @@ const Routers = () => {
                 <Route path="/home" element={<Home/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/register" element={<Register/>}/>
-                {/*<Route path="/logout" element={<Logout />} />*/}
+                <Route path="/menu" element={<Home/>}/>
+                <Route path="/orders" element={<div/>}/>
+                <Route path="/logout" element={<div/>} />
             </Routes>
         </BrowserRouter>
     );
 };
-
-export default Routers;

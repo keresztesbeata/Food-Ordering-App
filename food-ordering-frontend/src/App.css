@@ -1,0 +1,4 @@
+.centered_content {
+    flex-direction: row;
+    justify-content: center;
+}
