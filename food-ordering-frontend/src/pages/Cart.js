@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Header} from "../components/Header";
 import {CartContent} from "../components/cart/CartContent";
-import {Button} from "react-bootstrap";
+import {Button, Form} from "react-bootstrap";
 import {AddressInput} from "../components/cart/AddressInput";
 
 export const Cart = () => {
@@ -9,8 +9,10 @@ export const Cart = () => {
     const [address, setAddress] = useState({});
     const [totalPrice, setTotalPrice] = useState(0);
 
-    const createOrder = () => {
+    const createOrder = (e) => {
+        e.preventDefault();
         //todo: save the order
+        console.log(address)
     }
 
     const onAddressChange = (e) => {
@@ -51,15 +53,15 @@ export const Cart = () => {
     return (
         <div>
             <Header/>
-            <div className="flex justify-content-center align-items-center m-auto w-75">
+            <Form onSubmit={createOrder} className="flex justify-content-center align-items-center m-auto w-75">
                 <CartContent data={cartContent}
                              onUpdate={onUpdateItem}
                              onRemove={onRemoveItem}/>
                 <p>Total price: {totalPrice}</p>
                 <p>Enter the delivery address:</p>
                 <AddressInput onInputChange={onAddressChange}/>
-                <Button onClick={createOrder}>Create order</Button>
-            </div>
+                <Button type={"submit"} variant={"success"} className={"mt-3 w-100"}>Create order</Button>
+            </Form>
         </div>
     );
 };

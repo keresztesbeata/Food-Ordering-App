@@ -17,7 +17,7 @@ export const CartItem = (props) => {
                 <Button onClick={() => onIncrementQuantity(props.data)} variant={"success"}> + </Button>
                 <Button onClick={() => onDecrementQuantity(props.data)} variant={"danger"}
                         disabled={props.data.quantity <= 1}> - </Button>
-                <Button onClick={() => props.onRemove(props.data.food._id)} variant={"info"}> x </Button>
+                <Button onClick={() => props.onRemove(props.data.food._id)} variant={"secondary"}> x </Button>
             </Card.Body>
         </Card>
     );
