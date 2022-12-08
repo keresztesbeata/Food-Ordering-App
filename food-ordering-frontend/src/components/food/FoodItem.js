@@ -2,7 +2,7 @@ import React from "react";
 import {Button, Card} from "react-bootstrap";
 import {BsFillCartPlusFill} from "react-icons/bs"
 
-export const FoodsItem = (props) => {
+export const FoodItem = (props) => {
     return (
         <Card className={"border-dark"}>
             <Card.Header>
@@ -15,7 +15,7 @@ export const FoodsItem = (props) => {
                             {props.data.category}
                         </Card.Subtitle>
                     </div>
-                    <Button id={props.data._id} onClick={props.onClick} variant={"success"}>Add to cart <BsFillCartPlusFill/></Button>
+                    <Button onClick={() => props.onClick(props.data)} variant={"success"}>Add to cart <BsFillCartPlusFill/></Button>
                 </div>
             </Card.Header>
             <Card.Body>
