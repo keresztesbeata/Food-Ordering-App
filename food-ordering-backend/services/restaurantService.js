@@ -10,6 +10,17 @@ exports.find_all = () => {
         });
 };
 
+exports.find_by_id = (id) => {
+    return Restaurant.findOne({_id: {$oid: id}})
+        .then(restaurant => {
+            if (restaurant === null) {
+                throw_custom_error(404, `No restaurant exists with the id ${id}!`)
+            }
+            console.log(`Successfully retrieved restaurant by name ${restaurant._id.$oid}`);
+            return restaurant;
+        });
+};
+
 exports.find_by_name = (name) => {
     return Restaurant.findOne({name: name})
         .then(restaurant => {
@@ -18,6 +29,15 @@ exports.find_by_name = (name) => {
             }
             console.log(`Successfully retrieved restaurant by name ${restaurant.name}`);
             return restaurant;
+        });
+};
+
+exports.find_by_name_match = (name_match) => {
+    console.log('failed:'+name_match)
+    return Restaurant.find({$text: {$search: name_match}})
+        .then(restaurants => {
+            console.log(`Successfully retrieved ${restaurants.length} restaurants`);
+            return restaurants;
         });
 };
 
@@ -45,8 +65,8 @@ exports.find_by_schedule = (current_hour) => {
         });
 };
 
-exports.find_by_tags = (tags) => {
-    return Restaurant.find({tags: {$in: tags}})
+exports.find_by_tag = (tag) => {
+    return Restaurant.find({tags: {$in: [tag]}})
         .then(restaurants => {
             console.log(`Successfully retrieved ${restaurants.length} restaurants`);
             return restaurants;

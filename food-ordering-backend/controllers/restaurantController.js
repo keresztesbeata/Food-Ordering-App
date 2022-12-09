@@ -11,8 +11,8 @@ exports.restaurant_list = (req, res) => {
         .catch((err) => handle_error(err, res));
 }
 
-exports.restaurant_list_by_tags = (req, res) => {
-    service.find_by_tags(req.body.tags)
+exports.restaurant_list_by_tag = (req, res) => {
+    service.find_by_tag(req.param.tag)
         .then(restaurants => {
             res
                 .status(200)
@@ -21,9 +21,18 @@ exports.restaurant_list_by_tags = (req, res) => {
         .catch((err) => handle_error(err, res));
 }
 
-exports.open_restaurant_list = (req, res) => {
-    const current_hour = new Date().getHours();
-    service.find_by_schedule(current_hour)
+exports.restaurant_list_by_name_match = (req, res) => {
+    service.find_by_name_match(req.param.namematch)
+        .then(restaurants => {
+            res
+                .status(200)
+                .json(restaurants);
+        })
+        .catch((err) => handle_error(err, res));
+}
+
+exports.restaurant_detail_by_id = (req, res) => {
+    service.find_by_id(req.param.id)
         .then(restaurants => {
             res
                 .status(200)
@@ -38,6 +47,17 @@ exports.restaurant_detail_by_name = (req, res) => {
             res
                 .status(200)
                 .json(restaurant);
+        })
+        .catch((err) => handle_error(err, res));
+}
+
+exports.open_restaurant_list = (req, res) => {
+    const current_hour = new Date().getHours();
+    service.find_by_schedule(current_hour)
+        .then(restaurants => {
+            res
+                .status(200)
+                .json(restaurants);
         })
         .catch((err) => handle_error(err, res));
 }
