@@ -14,11 +14,8 @@ router.get('/owner/:owner', restaurant_controller.restaurant_detail_by_owner);
 /* GET restaurant details by name */
 router.get('/name/:name', restaurant_controller.restaurant_detail_by_name);
 
-/* GET restaurant details by name */
-router.get('/matches/:namematch', restaurant_controller.restaurant_list_by_name_match);
-
 /* GET all restaurants with the list of tags */
-router.get('/tag/:tag', restaurant_controller.restaurant_list_by_tag);
+router.post('/tags', restaurant_controller.restaurant_list_by_tags);
 
 /* GET all currently open restaurants */
 router.get('/open', restaurant_controller.open_restaurant_list);

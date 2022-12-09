@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Button, FormControl, InputGroup} from "react-bootstrap";
 import {FoodsList} from "./FoodsList";
 import {getFoodsByRestaurant} from "../../api/foodsApi";
-import {Notification, NOTIFICATION_TYPES} from "../Notification";
+import {NOTIFICATION_TYPES} from "../Notification";
 
 const allCategories = ["All", "Appetizers", "Pizza", "Pasta", "Soup", "Dessert", "Main"];
 

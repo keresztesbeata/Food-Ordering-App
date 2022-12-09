@@ -1,43 +1,26 @@
-import React, {useState} from "react";
-import {Button, FormControl, InputGroup} from "react-bootstrap";
-import {Menu} from "../food/Menu";
+import React, {useEffect, useState} from "react";
+import {Button, Dropdown, FormControl, InputGroup} from "react-bootstrap";
 import {RestaurantsList} from "./RestaurantsList";
-import {
-    getAllRestaurants,
-    getRestaurantById,
-    getRestaurantsByNameMatch,
-    getRestaurantsByTag
-} from "../../api/restaurantApi";
+import {getAllRestaurants, getRestaurantById, getRestaurantByName, getRestaurantsByTags} from "../../api/restaurantApi";
 import {Notification, NOTIFICATION_TYPES} from "../Notification";
+import {RestaurantItem} from "./RestaurantItem";
 
 export const RestaurantMenu = () => {
     const [allRestaurants, setAllRestaurants] = useState([]);
     const [restaurant, setRestaurant] = useState(null);
-    const [tag, setTag] = useState("");
+    const [tags, setTags] = useState("");
     const [name, setName] = useState("");
     const [notification, setNotification] = useState({show: false, message: "", type: NOTIFICATION_TYPES.ERROR});
 
-    const onSelectRestaurant = (event) => {
-        const id = event.target.id;
-        getRestaurantById(id)
-            .then(data => setRestaurant(data))
-            .catch(error => setNotification({show: true, message: error.message, type: NOTIFICATION_TYPES.ERROR}));
-    }
-
-    const onSearchRestaurantByName = () => {
-        getRestaurantsByNameMatch(name)
-            .then(data => setAllRestaurants(data))
-            .catch(error => setNotification({show: true, message: error.message, type: NOTIFICATION_TYPES.ERROR}));
-    }
-
     const onSearchRestaurantByTag = () => {
-        getRestaurantsByTag(tag)
+        console.log("Search restaurants by tags: ", tags);
+        getRestaurantsByTags(tags)
             .then(data => setAllRestaurants(data))
             .catch(error => setNotification({show: true, message: error.message, type: NOTIFICATION_TYPES.ERROR}));
     }
 
     const onResetFilters = () => {
-        setTag("");
+        setTags("");
         setName("");
         setRestaurant(null);
         getAllRestaurants()
@@ -45,9 +28,26 @@ export const RestaurantMenu = () => {
             .catch(error => setNotification({show: true, message: error.message, type: NOTIFICATION_TYPES.ERROR}));
     }
 
-    const displayRestaurants = () => {
-        return restaurant !== null ?
-            <RestaurantsList data={allRestaurants} onSelect={onSelectRestaurant}/>
+    const onSelectRestaurantByName = (name) => {
+        setName(name);
+    }
+
+    useEffect(() => {
+        getRestaurantByName(name)
+            .then(data => setRestaurant(data))
+            .catch(error => setNotification({show: true, message: error.message, type: NOTIFICATION_TYPES.ERROR}));
+    }, [name, setName]);
+
+    const displayRestaurantsDropdown = () => {
+        return allRestaurants.map(restaurant =>
+            <Dropdown.Item as={"button"} id={restaurant.name} key={restaurant.name}
+                           onClick={event => onSelectRestaurantByName(event.target.id)}>{restaurant.name}
+            </Dropdown.Item>)
+    }
+
+    const displayRestaurantsList = () => {
+        return allRestaurants.length > 0 ?
+            <RestaurantsList data={allRestaurants} onSelect={onSelectRestaurantByName}/>
             :
             <p>No restaurant has been selected!</p>
     }
@@ -58,20 +58,28 @@ export const RestaurantMenu = () => {
             <Button onClick={onResetFilters} variant={"secondary"}>Reset filters</Button>
             <div className={"d-flex flex-row gap-3 mb-3 mt-3"}>
                 <InputGroup>
-                    <InputGroup.Text>Search restaurant by name:</InputGroup.Text>
-                    <FormControl type={"text"} name={"name"} value={name}
-                                 onChange={(event) => setName(event.target.value)}/>
-                    <Button onClick={onSearchRestaurantByName} variant={"success"}>Search</Button>
+                    <InputGroup.Text>Select a restaurant:</InputGroup.Text>
+                    <Dropdown>
+                        <Dropdown.Toggle variant={"success"}>
+                            {name}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu variant={"success"}>
+                            {displayRestaurantsDropdown()}
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </InputGroup>
                 <InputGroup>
-                    <InputGroup.Text>Search restaurant by tag:</InputGroup.Text>
-                    <FormControl type={"text"} name={"tag"} value={tag}
-                                 onChange={(event) => setTag(event.target.value)}/>
+                    <InputGroup.Text>Search restaurant by tags:</InputGroup.Text>
+                    <FormControl type={"text"} name={"tag"} value={tags}
+                                 onChange={(event) => setTags(event.target.value)}/>
                     <Button onClick={onSearchRestaurantByTag} variant={"success"}>Search</Button>
                 </InputGroup>
             </div>
-            {displayRestaurants()}
-           {/*// <Menu restaurant={restaurant} onNotification={setNotification}/>*/}
+            { restaurant !== null?
+                <RestaurantItem data={restaurant} disable/>
+                :
+                displayRestaurantsList()}
+            {/*// <Menu restaurant={restaurant} onNotification={setNotification}/>*/}
         </div>
     );
 }

@@ -1,15 +1,18 @@
 import React from "react";
-import {Accordion} from "react-bootstrap";
+import {Accordion, Button} from "react-bootstrap";
 import AccordionItem from "react-bootstrap/AccordionItem";
+import {BsCheckCircle} from "react-icons/bs";
 
 export const RestaurantItem = (props) => {
 
     return (
-        <Accordion defaultActiveKey="0" className={"border-dark"} id={props.data._id} onClick={props.onClick}
+        <Accordion defaultActiveKey="0" className={"border-dark"} id={props.data._id}
                    data-toggle="collapse">
             <AccordionItem eventKey={props.data._id}>
                 <Accordion.Header>
-                    {props.data.name}
+                        <BsCheckCircle onClick={() => props.onClick(props.data.name)}
+                                hidden={props.disable}></BsCheckCircle>
+                         {props.data.name}
                 </Accordion.Header>
                 <Accordion.Body>
                     <p>Owner: {props.data.owner}</p>

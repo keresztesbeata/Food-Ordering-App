@@ -32,15 +32,6 @@ exports.find_by_name = (name) => {
         });
 };
 
-exports.find_by_name_match = (name_match) => {
-    console.log('failed:'+name_match)
-    return Restaurant.find({$text: {$search: name_match}})
-        .then(restaurants => {
-            console.log(`Successfully retrieved ${restaurants.length} restaurants`);
-            return restaurants;
-        });
-};
-
 exports.find_by_owner = (owner_name) => {
     // retrieve the id of the owner (only the username is given)
     return user_service.find_by_username(owner_name)
@@ -65,8 +56,9 @@ exports.find_by_schedule = (current_hour) => {
         });
 };
 
-exports.find_by_tag = (tag) => {
-    return Restaurant.find({tags: {$in: [tag]}})
+exports.find_by_tags = (tags) => {
+    console.log(tags)
+    return Restaurant.find({tags: {$in: tags}})
         .then(restaurants => {
             console.log(`Successfully retrieved ${restaurants.length} restaurants`);
             return restaurants;
