@@ -36,7 +36,7 @@ export const FoodsList = (props) => {
 
     return (
         <div className={"flex-column gap-2"}>
-            <h1>{props.category}</h1>
+            <h2>{props.category}</h2><hr/>
             <Row sm={"3"} className="align-items-stretch justify-content-start">
                 {props.data.map(displayFoodItem)}
             </Row>

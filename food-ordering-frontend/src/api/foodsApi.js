@@ -8,6 +8,7 @@ export function getFoodsByRestaurant(restaurantName) {
     return axios.get(url, {})
         .then(result => {
             const data = result.data;
+            console.log(data)
             console.log(`Successfully retrieved ${data.length} foods!`);
             return data;
         })
@@ -19,7 +20,6 @@ export function getFoodsByRestaurant(restaurantName) {
 
 export function getFoodsByRestaurantAndCategory(restaurantName, category) {
     const url = FOODS_URL + "/" + restaurantName + "/category/" + category;
-    console.log(url)
     return axios.get(url, {})
         .then(result => {
             const data = result.data;
@@ -28,6 +28,27 @@ export function getFoodsByRestaurantAndCategory(restaurantName, category) {
         })
         .catch(error => {
             console.log(error.message);
-            throw customError("Failed to load data!", `Failed to fetch foods for restaurant ${restaurantName} and catgeory ${category}!`);
+            throw customError("Failed to load data!", `Failed to fetch foods for restaurant ${restaurantName} and category ${category}!`);
+        });
+}
+
+export function getFoodsByRestaurantAndIngredients(restaurantName, ingredients) {
+    const url = FOODS_URL + "/" + restaurantName + "/ingredients";
+    const data = JSON.stringify({
+        ingredients: ingredients.split(",")
+    })
+    return axios.post(url, data, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(result => {
+            const data = result.data;
+            console.log(`Successfully retrieved ${data.length} foods!`);
+            return data;
+        })
+        .catch(error => {
+            console.log(error.message);
+            throw customError("Failed to load data!", `Failed to fetch foods for restaurant ${restaurantName} and ingredients list ${ingredients}!`);
         });
 }

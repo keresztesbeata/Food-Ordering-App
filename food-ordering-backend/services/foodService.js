@@ -24,7 +24,7 @@ exports.find_by_restaurant = (restaurant_name) => {
         });
 };
 
-exports.find_by_name_and_restaurant = (name, restaurant_name) => {
+exports.find_by_restaurant_and_name = (restaurant_name, name) => {
     return find_restaurant(restaurant_name)
         .then(restaurant => {
             return Food.findOne({name: name, restaurant: restaurant._id})
@@ -35,10 +35,10 @@ exports.find_by_name_and_restaurant = (name, restaurant_name) => {
         });
 };
 
-exports.find_by_category_and_restaurant = (category, restaurant_name) => {
+exports.find_by_restaurant_and_category = (restaurant_name, category) => {
     return find_restaurant(restaurant_name)
         .then(restaurant => {
-            return Food.find({category: category, restaurant: restaurant})
+            return Food.find({category: category, restaurant: restaurant._id})
                 .then(foods => {
                     console.log(`Successfully retrieved ${foods.length} foods by category ${category} and for restaurant ${restaurant_name}`);
                     return foods;
@@ -46,7 +46,7 @@ exports.find_by_category_and_restaurant = (category, restaurant_name) => {
         });
 };
 
-exports.find_by_ingredients_and_restaurant = (ingredients, restaurant_name) => {
+exports.find_by_restaurant_and_ingredients = (restaurant_name, ingredients) => {
     return find_restaurant(restaurant_name)
         .then(restaurant => {
             return Food.find({ingredients: {$in: ingredients}, restaurant: restaurant._id})

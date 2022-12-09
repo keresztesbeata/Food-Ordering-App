@@ -12,7 +12,21 @@ export function getAllRestaurants() {
         })
         .catch(error => {
             console.log(error.message);
-            throw customError("Failed to load data!", "Failed to fetch restaurants!");
+            throw customError("Failed to load data!", "Failed to fetch all restaurants!");
+        })
+}
+
+export function getOpenRestaurants() {
+    const url = RESTAURANTS_URL + "/open";
+    return axios.get(url, {})
+        .then(result => {
+            const data = result.data;
+            console.log(`Successfully retrieved ${data.length} restaurants!`);
+            return data;
+        })
+        .catch(error => {
+            console.log(error.message);
+            throw customError("Failed to load data!", "Failed to fetch open restaurants!");
         })
 }
 

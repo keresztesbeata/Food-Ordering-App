@@ -12,7 +12,7 @@ router.get('/:restaurant/name/:name', food_controller.food_detail_by_name);
 router.get('/:restaurant/category/:category', food_controller.food_list_by_category);
 
 /* GET foods by ingredients */
-router.get('/:restaurant/ingredients', food_controller.food_list_by_ingredients);
+router.post('/:restaurant/ingredients', food_controller.food_list_by_ingredients);
 
 /* Add a new food */
 router.post('/:restaurant', food_controller.food_bulk_create);

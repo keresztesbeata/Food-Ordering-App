@@ -17,7 +17,7 @@ export const Notification = (props) => {
     return (
         <Toast onClose={() => setShow(false)} show={show}
                bg={props.data.type} className={"mb-3 mt-3"}>
-            <Toast.Header closeButton>{props.data.message}</Toast.Header>
+            <Toast.Header closeButton className={"me-auto"}>{props.data.message}</Toast.Header>
             {props.data.details ?
                 <Toast.Body>
                     <p>{props.data.details}</p>

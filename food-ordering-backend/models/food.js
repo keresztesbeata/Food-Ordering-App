@@ -25,6 +25,12 @@ const FoodSchema = new Schema({
         ],
         required: [true, "You must specify the category of the food!"]
     },
+    ingredients: {
+        type: Array,
+        items: {
+            type: String
+        }
+    },
     price: {
         type: Number,
         min: [0.001, "Price must be a positive real number"],

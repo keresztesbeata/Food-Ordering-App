@@ -19,7 +19,7 @@ export const FoodItem = (props) => {
                 </div>
             </Card.Header>
             <Card.Body>
-                <Card.Text>{props.data.ingredients}</Card.Text>
+                <Card.Text>{props.data.ingredients.toString().replaceAll(",", ", ")}</Card.Text>
                 <div className={"d-flex justify-content-between"}>
                     <Card.Text>{props.data.portion_size} g</Card.Text>
                     <Card.Text>{props.data.price} RON</Card.Text>

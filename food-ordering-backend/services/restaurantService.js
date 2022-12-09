@@ -49,7 +49,7 @@ exports.find_by_owner = (owner_name) => {
 };
 
 exports.find_by_schedule = (current_hour) => {
-    return Restaurant.find({"schedule.opening_hour": {$lte: current_hour}, "schedule.closingHour": {$gt: current_hour}})
+    return Restaurant.find({"schedule.opening_hour": {$lte: current_hour}, "schedule.closing_hour": {$gt: current_hour}})
         .then(restaurants => {
             console.log(`Successfully retrieved ${restaurants.length} restaurants which are currently open`);
             return restaurants;

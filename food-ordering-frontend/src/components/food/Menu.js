@@ -1,102 +1,26 @@
 import React, {useEffect, useState} from "react";
-import {Button, FormControl, InputGroup} from "react-bootstrap";
+import {Button, Dropdown, FormControl, InputGroup} from "react-bootstrap";
 import {FoodsList} from "./FoodsList";
-import {getFoodsByRestaurant, getFoodsByRestaurantAndCategory} from "../../api/foodsApi";
-import {NOTIFICATION_TYPES} from "../Notification";
-
-const allCategories = ["All", "Appetizers", "Pizza", "Pasta", "Soup", "Dessert", "Main"];
-
-const initFoods = [
-    {
-        _id: "1",
-        name: "Pizza 1",
-        ingredients: "dough, tomato sauce, onion, salami, mozzarella",
-        price: 123.5,
-        portion_size: 400,
-        category: "Pizza"
-    }, {
-        _id: "2",
-        name: "Pizza 2",
-        ingredients: "dough, tomato sauce, onion, salami, mozzarella",
-        price: 123.5,
-        portion_size: 400,
-        category: "Pizza"
-    }, {
-        _id: "3",
-        name: "Pizza 3",
-        ingredients: "dough, tomato sauce, onion, salami, mozzarella",
-        price: 123.5,
-        portion_size: 400,
-        category: "Pizza"
-    }, {
-        _id: "4",
-        name: "Pizza 4",
-        ingredients: "dough, tomato sauce, onion, salami, mozzarella",
-        price: 123.5,
-        portion_size: 400,
-        category: "Pizza"
-    }, {
-        _id: "5",
-        name: "Pizza 5",
-        ingredients: "dough, tomato sauce, onion, salami, mozzarella",
-        price: 123.5,
-        portion_size: 400,
-        category: "Pizza"
-    }, {
-        _id: "6",
-        name: "Pizza 6",
-        ingredients: "dough, tomato sauce, onion, salami, mozzarella",
-        price: 123.5,
-        portion_size: 400,
-        category: "Pizza"
-    }, {
-        _id: "7",
-        name: "Pasta 1",
-        ingredients: "dough, tomato sauce, onion, salami, mozzarella",
-        price: 123.5,
-        portion_size: 400,
-        category: "Pasta"
-    }, {
-        _id: "8",
-        name: "Pasta 2",
-        ingredients: "dough, tomato sauce, onion, salami, mozzarella",
-        price: 123.5,
-        portion_size: 400,
-        category: "Pasta"
-    }, {
-        _id: "9",
-        name: "Pasta 3",
-        ingredients: "dough, tomato sauce, onion, salami, mozzarella",
-        price: 123.5,
-        portion_size: 400,
-        category: "Pasta"
-    }, {
-        _id: "10",
-        name: "Pasta 4",
-        ingredients: "dough, tomato sauce, onion, salami, mozzarella",
-        price: 123.5,
-        portion_size: 400,
-        category: "Pasta"
-    }, {
-        _id: "11",
-        name: "Pasta 5",
-        ingredients: "dough, tomato sauce, onion, salami, mozzarella",
-        price: 123.5,
-        portion_size: 400,
-        category: "Pasta"
-    }
-];
+import {
+    getFoodsByRestaurant,
+    getFoodsByRestaurantAndCategory,
+    getFoodsByRestaurantAndIngredients
+} from "../../api/foodsApi";
+import {Notification, NOTIFICATION_TYPES} from "../Notification";
+import {BsBook} from "react-icons/bs";
 
 export const Menu = (props) => {
     const [category, setCategory] = useState("All");
     const [allFoods, setAllFoods] = useState([]);
     const [ingredients, setIngredients] = useState("");
+    const allCategories = ["All", "Appetizers", "Pizza", "Pasta", "Soup", "Dessert", "Main"];
+    const [notification, setNotification] = useState({show: false, message: "", type: NOTIFICATION_TYPES.ERROR});
 
     const selectAllFoodsOfRestaurant = () => {
         if (props.restaurant !== null) {
             getFoodsByRestaurant(props.restaurant.name)
                 .then(data => setAllFoods(data))
-                .catch(error => props.onNotification({
+                .catch(error => setNotification({
                     show: true,
                     message: error.message,
                     type: NOTIFICATION_TYPES.ERROR
@@ -114,19 +38,13 @@ export const Menu = (props) => {
         } else if (props.restaurant !== null) {
             getFoodsByRestaurantAndCategory(props.restaurant.name, category)
                 .then(data => setAllFoods(data))
-                .catch(error => props.onNotification({
+                .catch(error => setNotification({
                     show: true,
                     message: error.message,
                     type: NOTIFICATION_TYPES.ERROR
                 }))
         }
     }, [props.restaurant, category, setCategory]);
-
-    // useEffect(() => {
-    //     // todo: fetch items based on ingredient from backend
-    //     const filteredItems = initFoods;
-    //     setAllFoods(filteredItems);
-    // }, [ingredients, setIngredients]);
 
     const displayFoods = () => {
         return category === "All" ?
@@ -145,12 +63,15 @@ export const Menu = (props) => {
                 <p>No foods exist in the category {category}!</p>
     }
 
-    const onSearchFoodsByCategory = () => {
-        // call to backend to apply the filters
-    }
-
-    const onSearchFoodsByIngredient = () => {
-        // call to backend to apply the filters
+    const onSearchFoodsByIngredients = () => {
+        console.log("Search restaurants by ingredients: ", ingredients);
+        if (ingredients.length > 0) {
+            getFoodsByRestaurantAndIngredients(props.restaurant.name, ingredients)
+                .then(data => setAllFoods(data))
+                .catch(error => setNotification({show: true, message: error.message, type: NOTIFICATION_TYPES.ERROR}));
+        } else {
+            selectAllFoodsOfRestaurant();
+        }
     }
 
     const onResetFilters = () => {
@@ -158,22 +79,37 @@ export const Menu = (props) => {
         setIngredients("");
     }
 
+    const displayCategories = () => {
+        return allCategories.map(category =>
+            <Dropdown.Item as={"button"} value={category}
+                           onClick={(event) => setCategory(event.target.value)}>{category}
+            </Dropdown.Item>)
+    }
+
     return (
         props.restaurant !== null ?
             <div className={"mt-3"}>
+                <h1><BsBook/> Menu</h1>
+                <hr/>
+                <Notification data={notification}/>
                 <Button onClick={onResetFilters} variant={"secondary"}>Reset filters</Button>
                 <div className={"d-flex flex-row gap-3 mb-3 mt-3"}>
-                    <InputGroup>
-                        <InputGroup.Text>Search foods by category:</InputGroup.Text>
-                        <FormControl type={"text"} name={"name"} value={category}
-                                     onChange={(event) => setCategory(event.target.value)}/>
-                        <Button onClick={onSearchFoodsByCategory} variant={"success"}>Search</Button>
-                    </InputGroup>
                     <InputGroup>
                         <InputGroup.Text>Search foods by ingredient:</InputGroup.Text>
                         <FormControl type={"text"} name={"ingredient"} value={ingredients}
                                      onChange={(event) => setIngredients(event.target.value)}/>
-                        <Button onClick={onSearchFoodsByIngredient} variant={"success"}>Search</Button>
+                        <Button onClick={onSearchFoodsByIngredients} variant={"success"}>Search</Button>
+                    </InputGroup>
+                    <InputGroup>
+                        <InputGroup.Text>Search foods by category:</InputGroup.Text>
+                        <Dropdown>
+                            <Dropdown.Toggle variant={"success"}>
+                                {category}
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu variant={"success"}>
+                                {displayCategories()}
+                            </Dropdown.Menu>
+                        </Dropdown>
                     </InputGroup>
                 </div>
                 {displayFoods()}
