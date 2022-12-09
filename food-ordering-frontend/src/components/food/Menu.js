@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Button, FormControl, InputGroup} from "react-bootstrap";
 import {FoodsList} from "./FoodsList";
-import {getFoodsByRestaurant} from "../../api/foodsApi";
+import {getFoodsByRestaurant, getFoodsByRestaurantAndCategory} from "../../api/foodsApi";
 import {NOTIFICATION_TYPES} from "../Notification";
 
 const allCategories = ["All", "Appetizers", "Pizza", "Pasta", "Soup", "Dessert", "Main"];
@@ -90,26 +90,43 @@ const initFoods = [
 export const Menu = (props) => {
     const [category, setCategory] = useState("All");
     const [allFoods, setAllFoods] = useState([]);
-    const [ingredient, setIngredient] = useState("");
+    const [ingredients, setIngredients] = useState("");
+
+    const selectAllFoodsOfRestaurant = () => {
+        if (props.restaurant !== null) {
+            getFoodsByRestaurant(props.restaurant.name)
+                .then(data => setAllFoods(data))
+                .catch(error => props.onNotification({
+                    show: true,
+                    message: error.message,
+                    type: NOTIFICATION_TYPES.ERROR
+                }));
+        }
+    }
 
     useEffect(() => {
-        getFoodsByRestaurant(props.restaurant)
-            .then(data => setAllFoods(data))
-            .catch(error => props.onNotification({show: true, message: error.message, type: NOTIFICATION_TYPES.ERROR}))
-    }, [props, props.restaurant]);
+        selectAllFoodsOfRestaurant();
+    }, [props.restaurant]);
 
-    // // useEffect for props.restaurant
+    useEffect(() => {
+        if (category === "All") {
+            selectAllFoodsOfRestaurant();
+        } else if (props.restaurant !== null) {
+            getFoodsByRestaurantAndCategory(props.restaurant.name, category)
+                .then(data => setAllFoods(data))
+                .catch(error => props.onNotification({
+                    show: true,
+                    message: error.message,
+                    type: NOTIFICATION_TYPES.ERROR
+                }))
+        }
+    }, [props.restaurant, category, setCategory]);
+
     // useEffect(() => {
-    //     // todo: fetch items based on category from backend
-    //     const filteredItems = initFoods.filter((item) => item.category === category);
+    //     // todo: fetch items based on ingredient from backend
+    //     const filteredItems = initFoods;
     //     setAllFoods(filteredItems);
-    // }, [props.restaurant]);
-
-    useEffect(() => {
-        // todo: fetch items based on ingredient from backend
-        const filteredItems = initFoods;
-        setAllFoods(filteredItems);
-    }, [ingredient, setIngredient]);
+    // }, [ingredients, setIngredients]);
 
     const displayFoods = () => {
         return category === "All" ?
@@ -137,14 +154,13 @@ export const Menu = (props) => {
     }
 
     const onResetFilters = () => {
-        setCategory("");
-        setIngredient("");
-        setAllFoods(initFoods); // todo: get from api
+        setCategory("All");
+        setIngredients("");
     }
 
     return (
         props.restaurant !== null ?
-            <div>
+            <div className={"mt-3"}>
                 <Button onClick={onResetFilters} variant={"secondary"}>Reset filters</Button>
                 <div className={"d-flex flex-row gap-3 mb-3 mt-3"}>
                     <InputGroup>
@@ -155,8 +171,8 @@ export const Menu = (props) => {
                     </InputGroup>
                     <InputGroup>
                         <InputGroup.Text>Search foods by ingredient:</InputGroup.Text>
-                        <FormControl type={"text"} name={"ingredient"} value={ingredient}
-                                     onChange={(event) => setIngredient(event.target.value)}/>
+                        <FormControl type={"text"} name={"ingredient"} value={ingredients}
+                                     onChange={(event) => setIngredients(event.target.value)}/>
                         <Button onClick={onSearchFoodsByIngredient} variant={"success"}>Search</Button>
                     </InputGroup>
                 </div>

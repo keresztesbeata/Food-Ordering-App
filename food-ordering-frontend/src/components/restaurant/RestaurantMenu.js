@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from "react";
 import {Button, Dropdown, FormControl, InputGroup} from "react-bootstrap";
 import {RestaurantsList} from "./RestaurantsList";
-import {getAllRestaurants, getRestaurantById, getRestaurantByName, getRestaurantsByTags} from "../../api/restaurantApi";
+import {getAllRestaurants, getRestaurantByName, getRestaurantsByTags} from "../../api/restaurantApi";
 import {Notification, NOTIFICATION_TYPES} from "../Notification";
 import {RestaurantItem} from "./RestaurantItem";
+import {Menu} from "../food/Menu";
 
 export const RestaurantMenu = () => {
     const [allRestaurants, setAllRestaurants] = useState([]);
@@ -12,42 +13,58 @@ export const RestaurantMenu = () => {
     const [name, setName] = useState("");
     const [notification, setNotification] = useState({show: false, message: "", type: NOTIFICATION_TYPES.ERROR});
 
+    const selectAllRestaurants = () => {
+        getAllRestaurants()
+            .then(data => setAllRestaurants(data))
+            .catch(error =>
+                setNotification({
+                    show: true,
+                    message: error.message,
+                    type: NOTIFICATION_TYPES.ERROR
+                }));
+    }
+
     const onSearchRestaurantByTag = () => {
         console.log("Search restaurants by tags: ", tags);
-        getRestaurantsByTags(tags)
-            .then(data => setAllRestaurants(data))
-            .catch(error => setNotification({show: true, message: error.message, type: NOTIFICATION_TYPES.ERROR}));
+        if (tags.length > 0) {
+            getRestaurantsByTags(tags)
+                .then(data => setAllRestaurants(data))
+                .catch(error => setNotification({show: true, message: error.message, type: NOTIFICATION_TYPES.ERROR}));
+        } else {
+            selectAllRestaurants();
+        }
     }
+
+    useEffect(() => {
+        if (name.length > 0) {
+            getRestaurantByName(name)
+                .then(data => setRestaurant(data))
+                .catch(error => setNotification({
+                    show: true,
+                    message: error.message,
+                    type: NOTIFICATION_TYPES.ERROR
+                }));
+        } else {
+            selectAllRestaurants();
+        }
+    }, [name, setName]);
 
     const onResetFilters = () => {
         setTags("");
         setName("");
         setRestaurant(null);
-        getAllRestaurants()
-            .then(data => setAllRestaurants(data))
-            .catch(error => setNotification({show: true, message: error.message, type: NOTIFICATION_TYPES.ERROR}));
     }
-
-    const onSelectRestaurantByName = (name) => {
-        setName(name);
-    }
-
-    useEffect(() => {
-        getRestaurantByName(name)
-            .then(data => setRestaurant(data))
-            .catch(error => setNotification({show: true, message: error.message, type: NOTIFICATION_TYPES.ERROR}));
-    }, [name, setName]);
 
     const displayRestaurantsDropdown = () => {
         return allRestaurants.map(restaurant =>
             <Dropdown.Item as={"button"} id={restaurant.name} key={restaurant.name}
-                           onClick={event => onSelectRestaurantByName(event.target.id)}>{restaurant.name}
+                           onClick={event => setName(event.target.id)}>{restaurant.name}
             </Dropdown.Item>)
     }
 
     const displayRestaurantsList = () => {
         return allRestaurants.length > 0 ?
-            <RestaurantsList data={allRestaurants} onSelect={onSelectRestaurantByName}/>
+            <RestaurantsList data={allRestaurants} onSelect={setName}/>
             :
             <p>No restaurant has been selected!</p>
     }
@@ -75,11 +92,11 @@ export const RestaurantMenu = () => {
                     <Button onClick={onSearchRestaurantByTag} variant={"success"}>Search</Button>
                 </InputGroup>
             </div>
-            { restaurant !== null?
+            {restaurant !== null ?
                 <RestaurantItem data={restaurant} disable/>
                 :
                 displayRestaurantsList()}
-            {/*// <Menu restaurant={restaurant} onNotification={setNotification}/>*/}
+            <Menu restaurant={restaurant} onNotification={setNotification}/>
         </div>
     );
 }
