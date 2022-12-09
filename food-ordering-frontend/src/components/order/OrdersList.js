@@ -13,7 +13,10 @@ export const OrdersList = (props) => {
         <div className={"flex-column gap-2"}>
             <ListGroup>
                 {
-                    props.data.map(displayOrderItem)
+                    props.data.length > 0 ?
+                        props.data.map(displayOrderItem)
+                        :
+                        <p>There are no previous orders!</p>
                 }
             </ListGroup>
         </div>

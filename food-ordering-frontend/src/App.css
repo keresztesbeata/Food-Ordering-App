@@ -1,4 +1,14 @@
-.centered_content {
+.centered-content {
     flex-direction: row;
     justify-content: center;
+}
+
+.background-container {
+    height: 100vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.error-text {
+    color: red;
 }

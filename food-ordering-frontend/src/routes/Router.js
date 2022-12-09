@@ -5,6 +5,8 @@ import {Login} from "../pages/Login";
 import {Register} from "../pages/Register";
 import {Orders} from "../pages/Orders";
 import {Cart} from "../pages/Cart";
+import {AddCustomerInfo} from "../components/user/AddCustomerInfo";
+import {AddRestaurant} from "../components/restaurant/AddRestaurant";
 
 
 export const Router = () => {
@@ -15,6 +17,8 @@ export const Router = () => {
                 <Route path="/home" element={<Home/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/register" element={<Register/>}/>
+                <Route path="/add_customer_info" element={<AddCustomerInfo/>}/>
+                <Route path="/add_restaurant" element={<AddRestaurant/>}/>
                 <Route path="/orders" element={<Orders/>}/>
                 <Route path="/cart" element={<Cart/>}/>
                 <Route path="/logout" element={<div/>}/>

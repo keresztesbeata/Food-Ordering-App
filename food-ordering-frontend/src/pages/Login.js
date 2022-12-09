@@ -1,12 +1,17 @@
 import {useState} from "react";
 import {Button, Form, FormControl, FormGroup, FormLabel} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
+import {login} from "../api/usersApi";
+import {FormErrorMessage} from "../components/FormErrorMesage";
 
 export const Login = () => {
     const [form, setForm] = useState({
         username: "",
         password: ""
     });
+    const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState(null);
+
     const onInputChange = e => {
         const nextFormState = {
             ...form,
@@ -14,41 +19,39 @@ export const Login = () => {
         };
         setForm(nextFormState);
     };
-    const navigate = useNavigate();
+
     const onSubmitForm = e => {
         e.preventDefault();
-        // validate form
-        // on failure
-        setErrorMessage("Wrong credentials!");
-        // on success
-        navigate("/");
+        login(form.username, form.password)
+            .then(() => {
+                navigate("/")
+            })
+            .catch(error => setErrorMessage({message:error.message, details: error.details}));
     };
 
-    const [errorMessage, setErrorMessage] = useState(null);
-    const renderErrorMessage = () => {
-        if (errorMessage !== null) {
-            return <div className="error">{errorMessage}</div>;
-        }
-        return <div/>
-    }
-
     return (
-        <Form onSubmit={onSubmitForm}>
-            <h1>Login</h1>
-            {renderErrorMessage()}
-            <FormGroup>
-                <FormLabel>Username</FormLabel>
-                <FormControl type={"text"} name={"username"} onChange={onInputChange} required></FormControl>
-            </FormGroup>
-            <FormGroup>
-                <FormLabel>Password</FormLabel>
-                <FormControl type={"text"} name={"password"} onChange={onInputChange} required></FormControl>
-            </FormGroup>
-            <Button type={"submit"}>Login</Button>
-            <center>
-                Don't have an account?
-                <Link to={"/register"}>Register now</Link>
-            </center>
-        </Form>
+        <div className="background-container page-background d-flex justify-content-center align-items-center mt-5">
+            <div className="card col-sm-3 border-dark text-left">
+                <Form onSubmit={onSubmitForm} className={"card-body"}>
+                    <h1>Login</h1>
+                    <FormErrorMessage error={errorMessage}/>
+                    <FormGroup className={"mb-3"}>
+                        <FormLabel>Username</FormLabel>
+                        <FormControl type={"text"} name={"username"} onChange={onInputChange} required></FormControl>
+                    </FormGroup>
+                    <FormGroup className={"mb-3"}>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl type={"text"} name={"password"} onChange={onInputChange} required></FormControl>
+                    </FormGroup>
+                    <div className="text-center">
+                        <Button type={"submit"}>Login</Button>
+                    </div>
+                    <center>
+                        Don't have an account?
+                        <Link to={"/register"}>Register now</Link>
+                    </center>
+                </Form>
+            </div>
+        </div>
     )
 }

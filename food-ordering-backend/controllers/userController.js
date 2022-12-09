@@ -22,6 +22,7 @@ exports.user_detail = (req, res) => {
 }
 
 exports.user_login = (req, res) => {
+    console.log(req.body)
     service.find_by_credentials(req.body.username, req.body.password)
         .then(user => {
             res
@@ -33,6 +34,16 @@ exports.user_login = (req, res) => {
 
 exports.user_register = (req, res) => {
     service.insert_user(req.body)
+        .then(user => {
+            res
+                .status(201)
+                .json(user);
+        })
+        .catch((err) => handle_error(err, res));
+}
+
+exports.user_edit = (req, res) => {
+    service.update_user(req.param.id, req.body)
         .then(user => {
             res
                 .status(201)

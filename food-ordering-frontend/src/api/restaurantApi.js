@@ -30,8 +30,22 @@ export function getOpenRestaurants() {
         })
 }
 
+export function getRestaurantByOwner(ownerId) {
+    const url = RESTAURANTS_URL + "/owner/" + ownerId;
+    return axios.get(url, {})
+        .then(result => {
+            const data = result.data;
+            console.log(`Successfully retrieved restaurant ${data.name} by id ${ownerId}!`);
+            return data;
+        })
+        .catch(error => {
+            console.log(error.message);
+            throw customError("Failed to load data!", `Failed to fetch restaurant by owner id ${ownerId}!`);
+        })
+}
+
 export function getRestaurantById(id) {
-    const url = RESTAURANTS_URL + "/id" + id;
+    const url = RESTAURANTS_URL + "/id/" + id;
     return axios.get(url, {})
         .then(result => {
             const data = result.data;
@@ -61,10 +75,10 @@ export function getRestaurantByName(restaurantName) {
 export function getRestaurantsByTags(tags) {
     const url = RESTAURANTS_URL + "/tags";
     // extract the list of tags from the string
-    const tagsList = JSON.stringify({
-        tags: tags.split(",")
-    });
-    console.log(tagsList);
+    const tagsList = {
+        tags: tags.split(",").map(s => s.trim())
+    };
+    console.log(tagsList)
     return axios.post(url, tagsList, {
         headers: {
             'Content-Type': 'application/json'
@@ -78,5 +92,27 @@ export function getRestaurantsByTags(tags) {
         .catch(error => {
             console.log(error.message);
             throw customError("Failed to load data!", `Failed to fetch restaurant by tags ${tags}!`);
+        })
+}
+
+export function addRestaurant(restaurantData) {
+    const owner = sessionStorage.getItem('user');
+    if(owner === null) {
+        throw customError("Adding restaurant failed!", `No logged in user!`);
+    }
+    if(owner.role !== "ADMIN") {
+        throw customError("Not authorized!", "Only admins can add a restaurant!");
+    }
+    restaurantData["owner"] = owner.credentials.username;
+    return axios.post(RESTAURANTS_URL, restaurantData)
+        .then(result => {
+            const data = result.data;
+            console.log(`Successfully added restaurant ${data.name}!`);
+            sessionStorage.setItem("restaurant", JSON.stringify(data));
+            return data;
+        })
+        .catch(error => {
+            console.log(error.message);
+            throw customError("Insert failed!", `Failed to add restaurant ${restaurantData.name}!`);
         })
 }

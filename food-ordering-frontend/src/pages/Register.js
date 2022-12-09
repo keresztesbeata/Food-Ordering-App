@@ -1,6 +1,8 @@
 import {useState} from "react";
-import {Button, Form, FormControl, FormGroup, FormLabel, FormText} from "react-bootstrap";
+import {Button, Form, FormControl, FormGroup, FormLabel, FormSelect} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
+import {register} from "../api/usersApi";
+import {ErrorMessage, FormErrorMessage} from "../components/FormErrorMesage";
 
 export const Register = () => {
     const [form, setForm] = useState({
@@ -8,12 +10,16 @@ export const Register = () => {
         password: "",
         firstname: "",
         lastname: "",
+        role: "",
         address: {
             city: "",
             street: "",
             nr: 0
         }
     });
+    const [errorMessage, setErrorMessage] = useState(null);
+    const navigate = useNavigate();
+
     const onInputChange = e => {
         const nextFormState = {
             ...form,
@@ -21,73 +27,51 @@ export const Register = () => {
         };
         setForm(nextFormState);
     };
-    const onAddressChange = e => {
-        const value = e.target.value;
-        const name = e.target.name;
-        const nextFormState = {
-            ...form,
-            address: {
-                [name]: name === "nr" ? parseInt(value) : value
-            }
-        };
-        setForm(nextFormState);
-    };
-    const navigate = useNavigate();
+
     const onSubmitForm = e => {
         e.preventDefault();
-        // validate form
-        // on failure
-        setErrorMessage("Invalid data!");
-        // on success
-        navigate("/");
+        register(form)
+            .then(user => {
+                if (user.role === "ADMIN") {
+                    navigate("/add_restaurant");
+                } else {
+                    navigate("/add_customer_info");
+                }
+            })
+            .catch(error => setErrorMessage({message:error.message, details: error.details}));
     };
 
-    const [errorMessage, setErrorMessage] = useState(null);
-    const renderErrorMessage = () => {
-        if (errorMessage !== null) {
-            return <div className="error">{errorMessage}</div>;
-        }
-        return <div/>
-    }
-
     return (
-        <Form onSubmit={onSubmitForm}>
-            <h1>Register</h1>
-            {renderErrorMessage()}
-            <FormGroup>
-                <FormLabel>Username</FormLabel>
-                <FormControl type={"text"} name={"username"} onChange={onInputChange} required></FormControl>
-            </FormGroup>
-            <FormGroup>
-                <FormLabel>Password</FormLabel>
-                <FormControl type={"text"} name={"password"} onChange={onInputChange} required></FormControl>
-            </FormGroup>
-            <FormGroup>
-                <FormLabel>Firstname</FormLabel>
-                <FormControl type={"text"} name={"firstname"} onChange={onInputChange} required></FormControl>
-            </FormGroup>
-            <FormGroup>
-                <FormLabel>Lastname</FormLabel>
-                <FormControl type={"text"} name={"lastname"} onChange={onInputChange} required></FormControl>
-            </FormGroup>
-            <FormText>Address</FormText>
-            <FormGroup>
-                <FormLabel>City</FormLabel>
-                <FormControl type={"text"} name={"city"} onChange={onAddressChange} required></FormControl>
-            </FormGroup>
-            <FormGroup>
-                <FormLabel>Street</FormLabel>
-                <FormControl type={"text"} name={"street"} onChange={onAddressChange} required></FormControl>
-            </FormGroup>
-            <FormGroup>
-                <FormLabel>Nr</FormLabel>
-                <FormControl type={"text"} name={"nr"} onChange={onAddressChange} required></FormControl>
-            </FormGroup>
-            <Button type={"submit"}>Register</Button>
-            <center>
-                Already have an account?
-                <Link to={"/login"}>Log in</Link>
-            </center>
-        </Form>
+        <div className="background-container page-background d-flex justify-content-center align-items-center mt-5">
+            <div className="card col-sm-3 border-dark text-left">
+                <Form onSubmit={onSubmitForm} className={"card-body"}>
+                    <h1>Register</h1>
+                    <FormErrorMessage error={errorMessage}/>
+                    <FormGroup className={"mb-3"}>
+                        <FormLabel>Username</FormLabel>
+                        <FormControl type={"text"} name={"username"} onChange={onInputChange} required></FormControl>
+                    </FormGroup>
+                    <FormGroup className={"mb-3"}>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl type={"text"} name={"password"} onChange={onInputChange} required></FormControl>
+                    </FormGroup>
+                    <FormGroup className="mb-3" controlId="2">
+                        <FormLabel>Role</FormLabel>
+                        <FormSelect name={"role"} placeholder="Select a role" onChange={onInputChange} required>
+                            <option value="">-- Choose role --</option>
+                            <option value="ADMIN">Admin</option>
+                            <option value="CUSTOMER">Customer</option>
+                        </FormSelect>
+                    </FormGroup>
+                    <div className="text-center">
+                        <Button type={"submit"}>Register</Button>
+                    </div>
+                    <center>
+                        Already have an account?
+                        <Link to={"/login"}>Log in</Link>
+                    </center>
+                </Form>
+            </div>
+        </div>
     )
 }

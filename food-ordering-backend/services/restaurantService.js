@@ -1,6 +1,7 @@
 const {throw_custom_error} = require("../error/errorHandler");
 const Restaurant = require("../models/restaurant").Restaurant;
 const user_service = require("./userService");
+const mongoose = require("mongoose");
 
 exports.find_all = () => {
     return Restaurant.find({})
@@ -32,24 +33,19 @@ exports.find_by_name = (name) => {
         });
 };
 
-exports.find_by_owner = (owner_name) => {
-    // retrieve the id of the owner (only the username is given)
-    return user_service.find_by_username(owner_name)
-        .then(user => {
-            return Restaurant.findOne({owner: user._id})
-                .then(restaurant => {
-                    console.log(`Successfully retrieved restaurant by name ${restaurant.name}`);
-                    return restaurant;
-                })
-                .catch((err) => {
-                    console.log(err);
-                    throw_custom_error(404, `No restaurant exists belonging to the user ${owner_name}!`)
-                });
+exports.find_by_owner = (owner_id) => {
+    return Restaurant.findOne({owner: new mongoose.Types.ObjectId(owner_id)})
+        .then(restaurant => {
+            console.log(`Successfully retrieved restaurant by owner id ${owner_id}`);
+            return restaurant;
         });
 };
 
 exports.find_by_schedule = (current_hour) => {
-    return Restaurant.find({"schedule.opening_hour": {$lte: current_hour}, "schedule.closing_hour": {$gt: current_hour}})
+    return Restaurant.find({
+        "schedule.opening_hour": {$lte: current_hour},
+        "schedule.closing_hour": {$gt: current_hour}
+    })
         .then(restaurants => {
             console.log(`Successfully retrieved ${restaurants.length} restaurants which are currently open`);
             return restaurants;
@@ -67,7 +63,7 @@ exports.find_by_tags = (tags) => {
 
 exports.insert_restaurant = (restaurant_data) => {
     // retrieve the id of the owner (only the username is given)
-    return user_service.find_by_username(restaurant_data.owner)
+    return user_service.find_by_id(restaurant_data.owner)
         .then(user => {
             if (user === null) {
                 throw_custom_error(404, `Owner ${restaurant_data.owner} not found!`);

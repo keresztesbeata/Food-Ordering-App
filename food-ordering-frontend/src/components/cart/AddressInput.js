@@ -3,19 +3,22 @@ import React from "react";
 
 export const AddressInput = (props) => {
     return (
-        <div className={"d-flex gap-3"}>
-            <InputGroup>
-                <InputGroup.Text>City:</InputGroup.Text>
-                <FormControl type={"text"} name={"city"} onChange={props.onInputChange} required/>
-            </InputGroup>
-            <InputGroup>
-                <InputGroup.Text>Street:</InputGroup.Text>
-                <FormControl type={"text"} name={"street"} onChange={props.onInputChange} required/>
-            </InputGroup>
-            <InputGroup>
-                <InputGroup.Text>Nr:</InputGroup.Text>
-                <FormControl type={"text"} name={"nr"} onChange={props.onInputChange} required/>
-            </InputGroup>
+        <div>
+            <p><strong>Address</strong></p>
+            <div className={"flex-row gap-3 mb-3"}>
+                <InputGroup className={"mb-3"}>
+                    <InputGroup.Text>City:</InputGroup.Text>
+                    <FormControl type={"text"} name={"city"} onChange={props.onInputChange} required/>
+                </InputGroup>
+                <InputGroup className={"mb-3"}>
+                    <InputGroup.Text>Street:</InputGroup.Text>
+                    <FormControl type={"text"} name={"street"} onChange={props.onInputChange} required/>
+                </InputGroup>
+                <InputGroup className={"mb-3"}>
+                    <InputGroup.Text>Nr:</InputGroup.Text>
+                    <FormControl type={"text"} name={"nr"} onChange={props.onInputChange} required/>
+                </InputGroup>
+            </div>
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Button, Dropdown, Form, FormControl, InputGroup} from "react-bootstrap";
 
-export const AddFoodItem = (props) => {
+export const AddFood = (props) => {
     const [name, setName] = useState("");
     const [ingredients, setIngredients] = useState("");
     const [portionSize, setPortionSize] = useState(0);

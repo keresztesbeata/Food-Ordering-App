@@ -3,41 +3,65 @@ import {Header} from "../components/Header";
 import {CartContent} from "../components/cart/CartContent";
 import {Button, Form} from "react-bootstrap";
 import {AddressInput} from "../components/cart/AddressInput";
+import {Notification, NOTIFICATION_TYPES} from "../components/Notification";
+import {createOrder} from "../api/ordersApi";
+
+const initCartContent = () => {
+    const content = JSON.parse(sessionStorage.getItem('cartContent'));
+    return content !== null ? content : [];
+}
 
 export const Cart = () => {
-    const [cartContent, setCartContent] = useState(() => JSON.parse(sessionStorage.getItem('cartContent')));
+    const [cartContent, setCartContent] = useState(() => initCartContent())
     const [address, setAddress] = useState({});
     const [totalPrice, setTotalPrice] = useState(0);
+    const [notification, setNotification] = useState({
+        show: false,
+        message: "",
+        details: "",
+        type: NOTIFICATION_TYPES.ERROR
+    });
 
-    const createOrder = (e) => {
+    const onCreateOrder = (e) => {
         e.preventDefault();
-        //todo: save the order
-        console.log(address)
+        let orderData = {
+            items: cartContent,
+            address: address,
+            totalPrice: totalPrice
+        }
+        createOrder(orderData)
+            .then(data => {
+                setNotification({
+                    show: true,
+                    message: "Order registered!",
+                    details: `Successfully created the order with id ${data._id}!`,
+                    type: NOTIFICATION_TYPES.INFO
+                });
+                setCartContent([]);
+                setTotalPrice(0);
+                setAddress({});
+            })
+            .catch(error => setNotification({
+                show: true,
+                message: error.message,
+                details: error.details,
+                type: NOTIFICATION_TYPES.ERROR
+            }));
     }
 
     const onAddressChange = (e) => {
-        let newAddress = address;
-        newAddress[e.target.name] = e.target.value;
-        setAddress(newAddress);
+        const value = e.target.value;
+        const name = e.target.name;
+        setAddress({
+            ...address,
+            [name]: name === "nr" ? parseInt(value) : value
+        });
     }
-
-    useEffect(() => {
-        sessionStorage.setItem('cartContent', JSON.stringify(cartContent));
-    }, [cartContent, setCartContent]);
 
     const onRemoveItem = (id) => {
         const newContent = cartContent.filter(item => item.food._id !== id);
         setCartContent(newContent);
     }
-
-    const calculateTotalPrice = (items) => {
-        return items.reduce((sum, item) => item.food.price * item.quantity + sum, 0);
-    }
-
-    useEffect(() => {
-        const total = calculateTotalPrice(cartContent);
-        setTotalPrice(total);
-    }, [cartContent]);
 
     const onUpdateItem = (id, quantity) => {
         const newContent = cartContent
@@ -50,10 +74,21 @@ export const Cart = () => {
         setCartContent(newContent);
     }
 
+    const calculateTotalPrice = (items) => {
+        return items.reduce((sum, item) => item.food.price * item.quantity + sum, 0);
+    }
+
+    useEffect(() => {
+        const total = calculateTotalPrice(cartContent);
+        setTotalPrice(total);
+        sessionStorage.setItem('cartContent', JSON.stringify(cartContent));
+    }, [cartContent, setCartContent]);
+
     return (
         <div>
             <Header/>
-            <Form onSubmit={createOrder} className="flex justify-content-center align-items-center m-auto w-75">
+            <Form onSubmit={onCreateOrder} className="flex justify-content-center align-items-center m-auto w-75">
+                <Notification data={notification}/>
                 <CartContent data={cartContent}
                              onUpdate={onUpdateItem}
                              onRemove={onRemoveItem}/>

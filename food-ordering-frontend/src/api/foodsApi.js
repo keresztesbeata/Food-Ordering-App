@@ -8,7 +8,6 @@ export function getFoodsByRestaurant(restaurantName) {
     return axios.get(url, {})
         .then(result => {
             const data = result.data;
-            console.log(data)
             console.log(`Successfully retrieved ${data.length} foods!`);
             return data;
         })
@@ -34,9 +33,9 @@ export function getFoodsByRestaurantAndCategory(restaurantName, category) {
 
 export function getFoodsByRestaurantAndIngredients(restaurantName, ingredients) {
     const url = FOODS_URL + "/" + restaurantName + "/ingredients";
-    const data = JSON.stringify({
-        ingredients: ingredients.split(",")
-    })
+    const data = {
+        ingredients: ingredients.split(",").map(s=>s.trim())
+    };
     return axios.post(url, data, {
         headers: {
             'Content-Type': 'application/json'

@@ -12,7 +12,10 @@ export const CartContent = (props) => {
         <div className={"flex-column gap-2"}>
             <ListGroup>
                 {
-                    props.data.map(displayCartItem)
+                    props.data.length > 0 ?
+                        props.data.map(displayCartItem)
+                        :
+                        <p>Your cart is empty!</p>
                 }
             </ListGroup>
         </div>

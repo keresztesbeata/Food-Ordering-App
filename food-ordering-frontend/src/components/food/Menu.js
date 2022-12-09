@@ -14,7 +14,7 @@ export const Menu = (props) => {
     const [allFoods, setAllFoods] = useState([]);
     const [ingredients, setIngredients] = useState("");
     const allCategories = ["All", "Appetizers", "Pizza", "Pasta", "Soup", "Dessert", "Main"];
-    const [notification, setNotification] = useState({show: false, message: "", type: NOTIFICATION_TYPES.ERROR});
+    const [notification, setNotification] = useState({show: false, message: "", details: "", type: NOTIFICATION_TYPES.ERROR});
 
     const selectAllFoodsOfRestaurant = () => {
         if (props.restaurant !== null) {
@@ -23,14 +23,11 @@ export const Menu = (props) => {
                 .catch(error => setNotification({
                     show: true,
                     message: error.message,
+                    details: error.details,
                     type: NOTIFICATION_TYPES.ERROR
                 }));
         }
     }
-
-    useEffect(() => {
-        selectAllFoodsOfRestaurant();
-    }, [props.restaurant]);
 
     useEffect(() => {
         if (category === "All") {
@@ -41,6 +38,7 @@ export const Menu = (props) => {
                 .catch(error => setNotification({
                     show: true,
                     message: error.message,
+                    details: error.details,
                     type: NOTIFICATION_TYPES.ERROR
                 }))
         }
@@ -52,7 +50,7 @@ export const Menu = (props) => {
                 .map(c => {
                     const filteredItems = allFoods.filter(foodData => foodData.category === c);
                     return filteredItems.length > 0 ?
-                        <FoodsList data={filteredItems} category={c}/>
+                        <FoodsList data={filteredItems} category={c} setNotification={setNotification}/>
                         :
                         <div/>
                 })
@@ -68,7 +66,12 @@ export const Menu = (props) => {
         if (ingredients.length > 0) {
             getFoodsByRestaurantAndIngredients(props.restaurant.name, ingredients)
                 .then(data => setAllFoods(data))
-                .catch(error => setNotification({show: true, message: error.message, type: NOTIFICATION_TYPES.ERROR}));
+                .catch(error => setNotification({
+                    show: true,
+                    message: error.message,
+                    details: error.details,
+                    type: NOTIFICATION_TYPES.ERROR
+                }));
         } else {
             selectAllFoodsOfRestaurant();
         }
