@@ -65,7 +65,7 @@ export const AddCustomerInfo = () => {
                     </FormGroup>
                     <AddressInput onInputChange={onAddressChange}/>
                     <div className="text-center">
-                        <Button type={"submit"}>Register</Button>
+                        <Button type={"submit"}>Save</Button>
                     </div>
                 </Form>
             </div>

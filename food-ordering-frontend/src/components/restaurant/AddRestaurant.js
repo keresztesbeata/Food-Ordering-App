@@ -54,24 +54,18 @@ export const AddRestaurant = () => {
                 <Form onSubmit={onSubmitForm} className={"card-body"}>
                     <h1>Add restaurant</h1>
                     <FormErrorMessage error={errorMessage}/>
-                    <FormGroup className={"mb-3"}>
-                        <FormLabel>Name</FormLabel>
+                    <InputGroup className={"mb-3"}>
+                        <InputGroup.Text>Name</InputGroup.Text>
                         <FormControl type={"text"} name={"name"} onChange={onInputChange} required></FormControl>
-                    </FormGroup>
-                    <FormGroup className={"mb-3"}>
-                        <FormLabel>Delivery fee</FormLabel>
-                        <FormControl type={"text"} name={"delivery_fee"} onChange={onInputChange}
-                                     required></FormControl>
-                    </FormGroup>
+                    </InputGroup>
                     <InputGroup className={"mb-3"}>
                         <InputGroup.Text>Delivery fee</InputGroup.Text>
                         <FormControl type={"text"} name={"delivery_fee"} onChange={onInputChange}
                                      required></FormControl>
                     </InputGroup>
-                    <InputGroup className={"mb-3"}>
-                        <InputGroup.Text>Rating</InputGroup.Text>
+                    <InputGroup className={"mb-3 md-3"}>
+                        <InputGroup.Text><BsStar/> Rating</InputGroup.Text>
                         <FormControl type={"text"} name={"rating"} onChange={onInputChange} required></FormControl>
-                        <BsStar/>
                     </InputGroup>
                     <InputGroup className={"mb-3"}>
                         <InputGroup.Text>Opening hour</InputGroup.Text>
@@ -87,7 +81,7 @@ export const AddRestaurant = () => {
                     </InputGroup>
                     <AddressInput onInputChange={onAddressChange}/>
                     <div className="text-center">
-                        <Button type={"submit"}>Register</Button>
+                        <Button type={"submit"}>Save</Button>
                     </div>
                 </Form>
             </div>
