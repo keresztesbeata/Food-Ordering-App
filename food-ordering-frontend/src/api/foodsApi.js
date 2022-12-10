@@ -12,8 +12,8 @@ export function getFoodsByRestaurant(restaurantName) {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError("Failed to load data!", `Failed to fetch foods for restaurant ${restaurantName}!`);
+            console.log(error.response.data);
+            throw customError(`Failed to fetch foods for restaurant ${restaurantName}!`, error.response.data);
         });
 }
 
@@ -26,8 +26,8 @@ export function getFoodsByRestaurantAndCategory(restaurantName, category) {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError("Failed to load data!", `Failed to fetch foods for restaurant ${restaurantName} and category ${category}!`);
+            console.log(error.response.data);
+            throw customError(`Failed to fetch foods for restaurant ${restaurantName} and category ${category}!`, error.response.data);
         });
 }
 
@@ -47,7 +47,7 @@ export function getFoodsByRestaurantAndIngredients(restaurantName, ingredients) 
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError("Failed to load data!", `Failed to fetch foods for restaurant ${restaurantName} and ingredients list ${ingredients}!`);
+            console.log(error.response.data);
+            throw customError( `Failed to fetch foods for restaurant ${restaurantName} and ingredients list ${ingredients}!`, error.response.data);
         });
 }

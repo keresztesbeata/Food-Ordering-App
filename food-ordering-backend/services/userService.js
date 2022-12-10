@@ -47,29 +47,28 @@ exports.find_by_credentials = (username, password) => {
 
 exports.insert_user = (user_data) => {
     // check for duplicate username
-    return this.find_by_username(user_data.credentials.username)
+    return this.find_by_username(user_data.username)
         .then(existingUser => {
-            if (existingUser !== null) {
-                console.log(existingUser);
-                throw_custom_error(400, `Failed to insert new user: duplicate username! Username ${user_data.username} is already being used.`);
-            } else {
-                const user = new User({
-                    credentials: {
-                        username: user_data.username, password: user_data.password,
-                    }, role: user_data.role
-                });
+            console.log(existingUser);
+            throw_custom_error(400, `Failed to insert new user: duplicate username! Username ${user_data.username} is already being used.`);
+        })
+        .catch(() => {
+            const user = new User({
+                credentials: {
+                    username: user_data.username, password: user_data.password,
+                }, role: user_data.role
+            });
 
-                return user.save()
-                    .then(savedUser => {
-                        console.log(savedUser);
-                        console.log(`User with username ${savedUser.credentials.username} and id ${savedUser._id} has been successfully added!`)
-                        return savedUser;
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        throw_custom_error(400, "Failed to insert new user! Invalid input data");
-                    });
-            }
+            return user.save()
+                .then(savedUser => {
+                    console.log(savedUser);
+                    console.log(`User with username ${savedUser.credentials.username} and id ${savedUser._id} has been successfully added!`)
+                    return savedUser;
+                })
+                .catch((err) => {
+                    console.log(err);
+                    throw_custom_error(400, Object.values(err.errors));
+                });
         });
 };
 
@@ -90,7 +89,7 @@ exports.update_user = (id, user_data) => {
                 })
                 .catch((err) => {
                     console.log(err);
-                    throw_custom_error(400, "Failed to update user! Invalid input data");
+                    throw_custom_error(400, Object.values(err.errors));
                 });
 
         });

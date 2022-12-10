@@ -62,7 +62,7 @@ exports.insert_order = (order_data) => {
                         })
                         .catch((err) => {
                             console.log(err);
-                            throw_custom_error(400, "Failed to insert new order! Invalid input data");
+                            throw_custom_error(400, Object.values(err.errors));
                         });
                 });
         });

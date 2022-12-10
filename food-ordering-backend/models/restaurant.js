@@ -5,8 +5,7 @@ const RestaurantSchema = new Schema({
     name: {type: String, minLength: 3, required: [true, "You must specify the name of the restaurant!"]},
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: [true, "You must specify the id of the owner of the restaurant!"]
+        ref: "User"
     },
     address: {
         type: Object,

@@ -12,7 +12,7 @@ export const USER_ROLE = {
 }
 
 export function isLoggedIn() {
-    return getSessionItem(SESSION_KEY.USER_KEY) != null;
+    return getSessionItem(SESSION_KEY.USER_KEY) !== null;
 }
 
 export function isAdmin() {

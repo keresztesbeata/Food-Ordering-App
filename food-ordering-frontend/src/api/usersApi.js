@@ -34,8 +34,8 @@ export function login(username, password) {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError(`Wrong credentials!`, error.message);
+            console.log(error.response.data);
+            throw customError(`Wrong credentials!`, error.response.data);
         });
 }
 
@@ -48,8 +48,8 @@ export function register(userData) {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError(`Failed to register user!`, `Invalid data!` + error.message);
+            console.log(error.response.data);
+            throw customError(`Failed to register user!`, error.response.data);
         });
 }
 
@@ -61,7 +61,7 @@ export function editUser(userData) {
         throw customError("Not authorized!", "Only customers can add personal information to their accounts!");
     }
     const loggedInUser = getSessionItem(SESSION_KEY.USER_KEY);
-    const url = USERS_URL + "/edit/" + loggedInUser._id;
+    const url = USERS_URL + loggedInUser._id;
     return axios.post(url, userData)
         .then(result => {
             const data = result.data;
@@ -70,8 +70,8 @@ export function editUser(userData) {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError(`Failed to update user!`, `Invalid data!` + error.message);
+            console.log(error.response.data);
+            throw customError(`Failed to update user!`, error.response.data);
         });
 }
 

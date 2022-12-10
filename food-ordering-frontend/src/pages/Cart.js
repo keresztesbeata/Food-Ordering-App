@@ -14,11 +14,7 @@ const initCartContent = () => {
 
 export const Cart = () => {
     const [cartContent, setCartContent] = useState(() => initCartContent())
-    const [address, setAddress] = useState({
-        city: "",
-        street: "",
-        nr: 0
-    });
+    const [deliveryAddress, setDeliveryAddress] = useState(() => getSessionItem(SESSION_KEY.USER_KEY).address);
     const [totalPrice, setTotalPrice] = useState(0);
     const [notification, setNotification] = useState({
         show: false,
@@ -29,18 +25,12 @@ export const Cart = () => {
 
     const onCreateOrder = (e) => {
         e.preventDefault();
-        const isAddressPresent = address.city.length > 0 && address.street.length > 0 && address.nr.length > 0;
-        if (isAddressPresent) {
-            setAddress({
-                ...address,
-                nr: parseInt(address.nr)
-            });
-        }
         let orderData = {
             items: cartContent,
             total_price: totalPrice,
-            delivery_address: isAddressPresent ? address : null,
+            delivery_address: deliveryAddress,
         }
+        console.log(orderData)
         createOrder(orderData)
             .then(data => {
                 setNotification({
@@ -51,7 +41,7 @@ export const Cart = () => {
                 });
                 setCartContent([]);
                 setTotalPrice(0);
-                setAddress({city:"",street:"",nr:0});
+                setDeliveryAddress({city:"",street:"",nr:0});
             })
             .catch(error => setNotification({
                 show: true,
@@ -64,8 +54,8 @@ export const Cart = () => {
     const onAddressChange = (e) => {
         const value = e.target.value;
         const name = e.target.name;
-        setAddress({
-            ...address,
+        setDeliveryAddress({
+            ...deliveryAddress,
             [name]: value
         });
     }
@@ -102,7 +92,7 @@ export const Cart = () => {
                              onRemove={onRemoveItem}/>
                 <p>Total price: {totalPrice}</p>
                 <p>Set a different delivery address than the home address:</p>
-                <AddressInput onInputChange={onAddressChange} data={address}/>
+                <AddressInput onInputChange={onAddressChange} data={deliveryAddress}/>
                 <Button type={"submit"} variant={"success"} className={"mt-3 w-100"}>Create order</Button>
             </Form>
         </div>

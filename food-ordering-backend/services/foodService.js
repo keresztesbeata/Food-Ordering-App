@@ -2,19 +2,8 @@ const {throw_custom_error} = require("../error/errorHandler");
 const Food = require("../models/food").Food;
 const restaurant_service = require("./restaurantService");
 
-function find_restaurant(restaurant_name) {
-    return restaurant_service.find_by_name(restaurant_name)
-        .then(restaurant => {
-            console.log(restaurant)
-            if (restaurant === null) {
-                throw_custom_error(404, `No restaurant with name ${restaurant_name} was found!`);
-            }
-            return restaurant;
-        });
-}
-
 exports.find_by_restaurant = (restaurant_name) => {
-    return find_restaurant(restaurant_name)
+    return restaurant_service.find_by_name(restaurant_name)
         .then(restaurant => {
             return Food.find({restaurant: restaurant._id})
                 .then(foods => {
@@ -25,7 +14,7 @@ exports.find_by_restaurant = (restaurant_name) => {
 };
 
 exports.find_by_restaurant_and_name = (restaurant_name, name) => {
-    return find_restaurant(restaurant_name)
+    return restaurant_service.find_by_name(restaurant_name)
         .then(restaurant => {
             return Food.findOne({name: name, restaurant: restaurant._id})
                 .then(food => {
@@ -36,7 +25,7 @@ exports.find_by_restaurant_and_name = (restaurant_name, name) => {
 };
 
 exports.find_by_restaurant_and_category = (restaurant_name, category) => {
-    return find_restaurant(restaurant_name)
+    return restaurant_service.find_by_name(restaurant_name)
         .then(restaurant => {
             return Food.find({category: category, restaurant: restaurant._id})
                 .then(foods => {
@@ -47,7 +36,7 @@ exports.find_by_restaurant_and_category = (restaurant_name, category) => {
 };
 
 exports.find_by_restaurant_and_ingredients = (restaurant_name, ingredients) => {
-    return find_restaurant(restaurant_name)
+    return restaurant_service.find_by_name(restaurant_name)
         .then(restaurant => {
             return Food.find({ingredients: {$in: ingredients}, restaurant: restaurant._id})
                 .then(foods => {
@@ -59,7 +48,7 @@ exports.find_by_restaurant_and_ingredients = (restaurant_name, ingredients) => {
 
 exports.insert_food = (restaurant_name, food_data) => {
     // retrieve the id of the owner (only the username is given)
-    return find_restaurant(restaurant_name)
+    return restaurant_service.find_by_name(restaurant_name)
         .then(existingRestaurant => {
             // add the id of the restaurant
             food_data.restaurant = existingRestaurant._id;
@@ -78,7 +67,7 @@ exports.insert_food = (restaurant_name, food_data) => {
                             })
                             .catch((err) => {
                                 console.log(err)
-                                throw_custom_error(400, "Failed to insert new food! Invalid input data");
+                                throw_custom_error(400, Object.values(err.errors));
                             });
                     }
                 })
@@ -87,7 +76,7 @@ exports.insert_food = (restaurant_name, food_data) => {
 
 exports.bulk_insert_food = (restaurant_name, food_list) => {
     // retrieve the id of the owner (only the username is given)
-    return find_restaurant(restaurant_name)
+    return restaurant_service.find_by_name(restaurant_name)
         .then(existingRestaurant => {
             // add the id of the restaurant
             const foods = food_list.map(food_data => {
@@ -102,7 +91,7 @@ exports.bulk_insert_food = (restaurant_name, food_list) => {
                 })
                 .catch((err) => {
                     console.log(err)
-                    throw_custom_error(400, "Failed to insert new food! Invalid input data.");
+                    throw_custom_error(400, Object.values(err.errors));
                 });
         });
 }

@@ -11,11 +11,9 @@ export const AddRestaurant = () => {
     const [deliveryFee, setDeliveryFee] = useState(0);
     const [rating, setRating] = useState(0);
     const [address, setAddress] = useState({
-        address: {
-            city: "",
-            street: "",
-            nr: 0
-        }
+        city: "",
+        street: "",
+        nr: 0
     });
     const [schedule, setSchedule] = useState({
         opening_hour: 0,
@@ -50,7 +48,8 @@ export const AddRestaurant = () => {
                     <FormErrorMessage error={errorMessage}/>
                     <InputGroup className={"mb-3"}>
                         <InputGroup.Text>Name</InputGroup.Text>
-                        <FormControl type={"text"} name={"name"} onChange={setName} required></FormControl>
+                        <FormControl type={"text"} name={"name"} onChange={e => setName(e.target.value)}
+                                     required></FormControl>
                     </InputGroup>
                     <InputGroup className={"mb-3"}>
                         <InputGroup.Text>Delivery fee</InputGroup.Text>
@@ -85,9 +84,8 @@ export const AddRestaurant = () => {
                                      required></FormControl>
                     </InputGroup>
                     <AddressInput onInputChange={e => setAddress({
-                        ...address,
                         [e.target.name]: e.target.value
-                    })}/>
+                    })} data={address}/>
                     <div className="text-center">
                         <Button type={"submit"}>Save</Button>
                     </div>

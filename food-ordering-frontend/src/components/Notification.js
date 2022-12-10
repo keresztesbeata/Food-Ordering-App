@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {Toast} from "react-bootstrap";
 
 export const NOTIFICATION_TYPES = {
-    INFO: 'light',
+    INFO: 'success',
     ERROR: 'danger',
     WARNING: 'warning'
 }

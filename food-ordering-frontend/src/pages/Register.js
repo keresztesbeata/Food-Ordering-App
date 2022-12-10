@@ -2,20 +2,13 @@ import {useState} from "react";
 import {Button, Form, FormControl, FormGroup, FormLabel, FormSelect} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
 import {register} from "../api/usersApi";
-import {ErrorMessage, FormErrorMessage} from "../components/FormErrorMesage";
+import {FormErrorMessage} from "../components/FormErrorMesage";
 
 export const Register = () => {
     const [form, setForm] = useState({
         username: "",
         password: "",
-        firstname: "",
-        lastname: "",
         role: "",
-        address: {
-            city: "",
-            street: "",
-            nr: 0
-        }
     });
     const [errorMessage, setErrorMessage] = useState(null);
     const navigate = useNavigate();
@@ -38,7 +31,7 @@ export const Register = () => {
                     navigate("/add_customer_info");
                 }
             })
-            .catch(error => setErrorMessage({message:error.message, details: error.details}));
+            .catch(error => setErrorMessage({message: error.message, details: error.details}));
     };
 
     return (

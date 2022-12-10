@@ -11,8 +11,8 @@ export function getAllRestaurants() {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError("Failed to load data!", "Failed to fetch all restaurants!");
+            console.log(error.response.data);
+            throw customError("Failed to fetch all restaurants!", error.response.data);
         })
 }
 
@@ -25,8 +25,8 @@ export function getOpenRestaurants() {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError("Failed to load data!", "Failed to fetch open restaurants!");
+            console.log(error.response.data);
+            throw customError( "Failed to fetch open restaurants!", error.response.data);
         })
 }
 
@@ -39,8 +39,8 @@ export function getRestaurantByOwner(ownerId) {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError("Failed to load data!", `Failed to fetch restaurant by owner id ${ownerId}!`);
+            console.log(error.response.data);
+            throw customError(`Failed to fetch restaurant by owner id ${ownerId}!`, error.response.data);
         })
 }
 
@@ -53,8 +53,8 @@ export function getRestaurantById(id) {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError("Failed to load data!", `Failed to fetch restaurant by id ${id}!`);
+            console.log(error.response.data);
+            throw customError(`Failed to fetch restaurant by id ${id}!`, error.response.data);
         })
 }
 
@@ -67,8 +67,8 @@ export function getRestaurantByName(restaurantName) {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError("Failed to load data!", `Failed to fetch restaurants by name ${restaurantName}!`);
+            console.log(error.response.data);
+            throw customError(`Failed to fetch restaurants by name ${restaurantName}!`, error.response.data);
         })
 }
 
@@ -90,8 +90,8 @@ export function getRestaurantsByTags(tags) {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError("Failed to load data!", `Failed to fetch restaurant by tags ${tags}!`);
+            console.log(error.response.data);
+            throw customError(`Failed to fetch restaurant by tags ${tags}!`, error.response.data);
         })
 }
 
@@ -103,7 +103,7 @@ export function addRestaurant(restaurantData) {
         throw customError("Not authorized!", "Only admins can add a restaurant!");
     }
     const owner = getSessionItem(SESSION_KEY.USER_KEY);
-    restaurantData["owner"] = owner.credentials.username;
+    restaurantData["owner"] = owner._id;
 
     return axios.post(RESTAURANTS_URL, restaurantData)
         .then(result => {
@@ -113,8 +113,8 @@ export function addRestaurant(restaurantData) {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError("Saving failed!", `Failed to add restaurant ${restaurantData.name}!`);
+            console.log(error.response.data);
+            throw customError( `Failed to add restaurant ${restaurantData.name}!`, error.response.data);
         })
 }
 
@@ -125,10 +125,8 @@ export function editRestaurant(restaurantData) {
     if (!isAdmin()) {
         throw customError("Not authorized!", "Only the admin can edit the restaurant!");
     }
-    const owner = getSessionItem(SESSION_KEY.USER_KEY);
-    restaurantData["owner"] = owner.credentials.username;
     const id = getSessionItem(SESSION_KEY.RESTAURANT_KEY)._id;
-
+    console.log(id)
     const url = RESTAURANTS_URL + "/id/" + id;
 
     return axios.post(url, restaurantData)
@@ -139,7 +137,7 @@ export function editRestaurant(restaurantData) {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError("Saving failed!", `Failed to update restaurant ${restaurantData.name}!`);
+            console.log(error.response.data);
+            throw customError(`Failed to update restaurant ${restaurantData.name}!`, error.response.data);
         })
 }

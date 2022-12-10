@@ -2,7 +2,7 @@ const service = require("../services/userService");
 const {handle_error} = require("../error/errorHandler");
 
 exports.user_list = (req, res) => {
-    service.find_all()
+    return service.find_all()
         .then(users => {
             res
                 .status(200)
@@ -12,7 +12,7 @@ exports.user_list = (req, res) => {
 }
 
 exports.user_detail = (req, res) => {
-    service.find_by_username(req.params.username)
+    return service.find_by_username(req.params.username)
         .then(user => {
             res
                 .status(200)
@@ -22,8 +22,7 @@ exports.user_detail = (req, res) => {
 }
 
 exports.user_login = (req, res) => {
-    console.log(req.body)
-    service.find_by_credentials(req.body.username, req.body.password)
+    return service.find_by_credentials(req.body.username, req.body.password)
         .then(user => {
             res
                 .status(200)
@@ -33,7 +32,7 @@ exports.user_login = (req, res) => {
 }
 
 exports.user_register = (req, res) => {
-    service.insert_user(req.body)
+    return service.insert_user(req.body)
         .then(user => {
             res
                 .status(201)
@@ -43,7 +42,7 @@ exports.user_register = (req, res) => {
 }
 
 exports.user_edit = (req, res) => {
-    service.update_user(req.param.id, req.body)
+    return service.update_user(req.param.id, req.body)
         .then(user => {
             res
                 .status(201)

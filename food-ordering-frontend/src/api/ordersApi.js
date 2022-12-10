@@ -13,8 +13,8 @@ export function getOrdersByRestaurant(restaurantName) {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError("Failed to load data!", `Failed to fetch orders for restaurant ${restaurantName}!`);
+            console.log(error.response.data);
+            throw customError(`Failed to fetch orders for restaurant ${restaurantName}!`, error.response.data);
         });
 }
 
@@ -28,8 +28,8 @@ export function getOrdersByCustomer(customerName) {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError("Failed to load data!", `Failed to fetch orders for customer ${customerName}!`);
+            console.log(error.response.data);
+            throw customError(`Failed to fetch orders for customer ${customerName}!`, error.response.data);
         });
 }
 
@@ -76,7 +76,7 @@ export function createOrder(orderData) {
             return data;
         })
         .catch(error => {
-            console.log(error.message);
-            throw customError("Failed to create order!", `Invalid data!`);
+            console.log(error.response.data);
+            throw customError("Failed to create order!", error.response.data);
         });
 }

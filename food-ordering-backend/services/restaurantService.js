@@ -63,11 +63,9 @@ exports.find_by_tags = (tags) => {
 
 exports.insert_restaurant = (restaurant_data) => {
     // retrieve the id of the owner (only the username is given)
+    console.log(restaurant_data)
     return user_service.find_by_id(restaurant_data.owner)
         .then(user => {
-            if (user === null) {
-                throw_custom_error(404, `Owner ${restaurant_data.owner} not found!`);
-            } else {
                 // add the id of the owner
                 restaurant_data.owner = user._id;
                 const restaurant = new Restaurant(restaurant_data);
@@ -85,34 +83,31 @@ exports.insert_restaurant = (restaurant_data) => {
                                 })
                                 .catch((err) => {
                                     console.log(err)
-                                    throw_custom_error(400, "Failed to insert new restaurant! Invalid input data");
+                                    throw_custom_error(400, Object.values(err.errors));
                                 });
                         }
                     })
             }
-        });
+        )
 }
 
 exports.edit_restaurant = (id, restaurant_data) => {
-    const restaurant = new Restaurant(restaurant_data);
     return this.find_by_id(id)
-        .then(existingRestaurant => {
-            if (existingRestaurant === null) {
-                throw_custom_error(400, `Failed to update restaurant! No restaurant exists with the id ${restaurant_data._id}!`);
-            } else {
-                // save the restaurant
-                restaurant._id = existingRestaurant._id;
-                // add the id of the owner
-                restaurant_data.owner = existingRestaurant.owner;
-                return restaurant.save()
-                    .then(savedRestaurant => {
-                        console.log(`Restaurant with name ${savedRestaurant.name} and id ${savedRestaurant._id} has been successfully updated!`)
-                        return savedRestaurant;
-                    })
-                    .catch((err) => {
-                        console.log(err)
-                        throw_custom_error(400, "Failed to update restaurant! Invalid input data");
-                    });
-            }
+        .then(restaurant => {
+            // add the id of the owner
+            restaurant.name = restaurant_data.name;
+            restaurant.address = restaurant_data.address;
+            restaurant.rating = restaurant_data.rating;
+            restaurant.schedule = restaurant_data.schedule;
+            restaurant.tags = restaurant_data.tags;
+            restaurant.delivery_fee = restaurant_data.delivery_fee;
+            return restaurant.save()
+                .then(savedRestaurant => {
+                    console.log(`Restaurant with name ${savedRestaurant.name} and id ${savedRestaurant._id} has been successfully updated!`)
+                    return savedRestaurant;
+                })
+                .catch((err) => {
+                    throw_custom_error(400, Object.values(err.errors));
+                });
         });
 }

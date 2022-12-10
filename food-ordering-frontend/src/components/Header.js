@@ -1,35 +1,34 @@
-import {Nav} from "react-bootstrap";
+import {Nav, NavLink} from "react-bootstrap";
 import {useNavigate} from "react-router-dom";
 import {logout} from "../api/usersApi";
-import React, {useState} from "react";
-import {Notification, NOTIFICATION_TYPES} from "./Notification";
+import React from "react";
+import {isAdmin} from "../api/utils";
 
 export const Header = () => {
     const navigate = useNavigate();
-    const [error, setError] = useState(null);
 
     const onLogOut = () => {
         try {
             logout();
             navigate("/login");
         } catch (err) {
-            setError({message: err.message, details: err.details, show: true, type: NOTIFICATION_TYPES.ERROR});
+            alert(err.message + err.details);
         }
     }
 
     return (
         <div>
             <Nav defaultActiveKey="/" to={"/home"} className="flex-row justify-content-center">
-                <Nav.Link href="/home">Foods</Nav.Link>
-                <Nav.Link href="/cart">Cart</Nav.Link>
-                <Nav.Link href="/orders">Orders</Nav.Link>
-                <Nav.Link onClick={onLogOut}>Logout</Nav.Link>
+                <NavLink href="/home">Home</NavLink>
+                {
+                    isAdmin() ?
+                        <NavLink href="/menu">Menu</NavLink>
+                        :
+                        <NavLink href="/cart">Cart</NavLink>
+                }
+                <NavLink href="/orders">Orders</NavLink>
+                <NavLink onClick={onLogOut}>Logout</NavLink>
             </Nav>
-            {error != null ?
-                <Notification data={error}/>
-                :
-                <div/>
-            }
         </div>
     )
 }
