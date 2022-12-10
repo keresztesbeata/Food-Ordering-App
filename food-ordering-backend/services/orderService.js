@@ -45,11 +45,9 @@ exports.insert_order = (order_data) => {
                         throw_custom_error(404, `No customer with name ${order_data.customer} was found!`);
                     }
                     // extract the address of delivery from the user data when needed
-                    if (order_data.delivery_address === undefined) {
+                    if (order_data.delivery_address === null) {
                         order_data.delivery_address = user.address;
                     }
-                    // set the date of the order to the current date
-                    order_data.order_date = new mongoose.Types.Date();
                     console.log(order_data);
                     // add the delivery fee
                     order_data.total_price += foundRestaurant.delivery_fee;

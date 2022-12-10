@@ -96,10 +96,10 @@ export function getRestaurantsByTags(tags) {
 }
 
 export function addRestaurant(restaurantData) {
-    if(!isLoggedIn()) {
+    if (!isLoggedIn()) {
         throw customError("Adding restaurant failed!", `No logged in user!`);
     }
-    if(!isAdmin()) {
+    if (!isAdmin()) {
         throw customError("Not authorized!", "Only admins can add a restaurant!");
     }
     const owner = getSessionItem(SESSION_KEY.USER_KEY);
@@ -119,18 +119,19 @@ export function addRestaurant(restaurantData) {
 }
 
 export function editRestaurant(restaurantData) {
-    if(!isLoggedIn()) {
+    if (!isLoggedIn()) {
         throw customError("Editing restaurant failed!", `No logged in user!`);
     }
-    if(!isAdmin()) {
+    if (!isAdmin()) {
         throw customError("Not authorized!", "Only the admin can edit the restaurant!");
     }
     const owner = getSessionItem(SESSION_KEY.USER_KEY);
     restaurantData["owner"] = owner.credentials.username;
     const id = getSessionItem(SESSION_KEY.RESTAURANT_KEY)._id;
-    restaurantData["_id"] = id;
 
-    return axios.post(RESTAURANTS_URL, restaurantData)
+    const url = RESTAURANTS_URL + "/id/" + id;
+
+    return axios.post(url, restaurantData)
         .then(result => {
             const data = result.data;
             console.log(`Successfully updated restaurant ${data.name}!`);

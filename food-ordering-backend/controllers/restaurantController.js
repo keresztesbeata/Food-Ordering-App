@@ -71,3 +71,13 @@ exports.restaurant_create = (req, res) => {
         })
         .catch((err) => handle_error(err, res));
 }
+
+exports.restaurant_edit = (req, res) => {
+    return service.edit_restaurant(req.params.id, req.body)
+        .then(restaurant => {
+            res
+                .status(201)
+                .json(restaurant);
+        })
+        .catch((err) => handle_error(err, res));
+}

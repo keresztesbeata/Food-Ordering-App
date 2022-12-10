@@ -23,4 +23,7 @@ router.get('/open', restaurant_controller.open_restaurant_list);
 /* Add a new restaurant */
 router.post('/', restaurant_controller.restaurant_create);
 
+/* Update a restaurant */
+router.post('/id/:id', restaurant_controller.restaurant_edit);
+
 module.exports = router;

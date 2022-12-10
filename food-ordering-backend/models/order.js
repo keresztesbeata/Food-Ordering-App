@@ -22,6 +22,7 @@ const OrderSchema = new Schema({
     },
     order_date: {
         type: Date,
+        default: Date.now(),
         required: [true, "You must specify the date on which the order was created!"]
     },
     total_price: {

@@ -92,3 +92,27 @@ exports.insert_restaurant = (restaurant_data) => {
             }
         });
 }
+
+exports.edit_restaurant = (id, restaurant_data) => {
+    const restaurant = new Restaurant(restaurant_data);
+    return this.find_by_id(id)
+        .then(existingRestaurant => {
+            if (existingRestaurant === null) {
+                throw_custom_error(400, `Failed to update restaurant! No restaurant exists with the id ${restaurant_data._id}!`);
+            } else {
+                // save the restaurant
+                restaurant._id = existingRestaurant._id;
+                // add the id of the owner
+                restaurant_data.owner = existingRestaurant.owner;
+                return restaurant.save()
+                    .then(savedRestaurant => {
+                        console.log(`Restaurant with name ${savedRestaurant.name} and id ${savedRestaurant._id} has been successfully updated!`)
+                        return savedRestaurant;
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                        throw_custom_error(400, "Failed to update restaurant! Invalid input data");
+                    });
+            }
+        });
+}

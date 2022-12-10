@@ -61,7 +61,7 @@ export function createOrder(orderData) {
         throw customError("Total price cannot be negative!");
     }
 
-    orderData["customer"] = customer.credentials.username;
+    orderData["customer"] = customer._id;
     orderData["restaurant"] = orderData.items.map(item => item.food.restaurant)[0];
 
     return axios.post(ORDERS_URL, orderData)
