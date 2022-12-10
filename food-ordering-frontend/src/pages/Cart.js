@@ -17,7 +17,7 @@ export const Cart = () => {
     const [address, setAddress] = useState({
         city: "",
         street: "",
-        nr: -1
+        nr: 0
     });
     const [totalPrice, setTotalPrice] = useState(0);
     const [notification, setNotification] = useState({
@@ -38,7 +38,7 @@ export const Cart = () => {
         }
         let orderData = {
             items: cartContent,
-            totalPrice: totalPrice,
+            total_price: totalPrice,
             delivery_address: isAddressPresent ? address : null,
         }
         createOrder(orderData)
@@ -51,7 +51,7 @@ export const Cart = () => {
                 });
                 setCartContent([]);
                 setTotalPrice(0);
-                setAddress({});
+                setAddress({city:"",street:"",nr:0});
             })
             .catch(error => setNotification({
                 show: true,
@@ -102,7 +102,7 @@ export const Cart = () => {
                              onRemove={onRemoveItem}/>
                 <p>Total price: {totalPrice}</p>
                 <p>Set a different delivery address than the home address:</p>
-                <AddressInput onInputChange={onAddressChange}/>
+                <AddressInput onInputChange={onAddressChange} data={address}/>
                 <Button type={"submit"} variant={"success"} className={"mt-3 w-100"}>Create order</Button>
             </Form>
         </div>

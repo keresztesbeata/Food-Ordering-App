@@ -8,15 +8,6 @@ import {getSessionItem, isAdmin, isLoggedIn, SESSION_KEY} from "../api/utils";
 export const Orders = () => {
     const [notification, setNotification] = useState({show: false, message: "", type: NOTIFICATION_TYPES.ERROR});
     const [orders, setOrders] = useState(() => {
-        if (!isLoggedIn()) {
-            setNotification({
-                show: true,
-                message: "No logged in user!",
-                details: "Log in first to create orders!",
-                type: NOTIFICATION_TYPES.ERROR
-            });
-            return [];
-        }
         if (isAdmin()) {
             const restaurant = getSessionItem(SESSION_KEY.RESTAURANT_KEY);
             getOrdersByRestaurant(restaurant.name)

@@ -50,9 +50,10 @@ exports.insert_order = (order_data) => {
                     }
                     console.log(order_data);
                     // add the delivery fee
-                    order_data.total_price += foundRestaurant.delivery_fee;
+                    order_data.total_price += 1.0 * foundRestaurant.delivery_fee;
                     // create the order model
                     const order = new Order(order_data);
+                    console.log(order);
                     // save the order
                     return order.save()
                         .then(savedOrder => {
@@ -60,7 +61,7 @@ exports.insert_order = (order_data) => {
                             return savedOrder;
                         })
                         .catch((err) => {
-                            console.log(err)
+                            console.log(err);
                             throw_custom_error(400, "Failed to insert new order! Invalid input data");
                         });
                 });

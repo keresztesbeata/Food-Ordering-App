@@ -33,12 +33,12 @@ export function getOrdersByCustomer(customerName) {
         });
 }
 
-export function validateCartContent(cartContent) {
-    const isValidCartContent = cartContent.map(item => item.food.restaurant
-        .every((value, i, array) => value === array[0]));
+function validateCartContent(cartContent) {
+    const isValidCartContent = cartContent.map(item => item.food.restaurant)
+        .every((value, i, array) => value === array[0]);
 
     if (!isValidCartContent) {
-        throw customError("Cannot add food items from different restaurants in the same cart!");
+        throw customError("Cannot create order with foods from different restaurants!");
     }
 }
 
@@ -57,12 +57,16 @@ export function createOrder(orderData) {
 
     validateCartContent(orderData.items);
 
-    if (orderData.totalPrice < 0) {
+    if (orderData.total_price < 0) {
         throw customError("Total price cannot be negative!");
     }
 
     orderData["customer"] = customer._id;
     orderData["restaurant"] = orderData.items.map(item => item.food.restaurant)[0];
+    orderData["items"] = orderData["items"].map(item => {return {
+        id: item.food.name,
+        quantity: item.quantity
+    }});
 
     return axios.post(ORDERS_URL, orderData)
         .then(result => {

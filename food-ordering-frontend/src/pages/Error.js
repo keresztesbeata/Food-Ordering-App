@@ -3,7 +3,7 @@ import {Modal} from "react-bootstrap";
 
 export const Error = (props) => {
     return (
-        <div className="background-container bg-image d-flex justify-content-center align-items-center">
+        <div className="background-container d-flex justify-content-center align-items-center">
             <Modal.Dialog>
                 <Modal.Header>
                     <Modal.Title>{props.error.message}</Modal.Title>

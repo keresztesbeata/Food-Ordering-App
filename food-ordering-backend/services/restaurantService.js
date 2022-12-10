@@ -12,12 +12,12 @@ exports.find_all = () => {
 };
 
 exports.find_by_id = (id) => {
-    return Restaurant.findOne({_id: {$oid: id}})
+    return Restaurant.findOne({"_id": new mongoose.Types.ObjectId(id)})
         .then(restaurant => {
             if (restaurant === null) {
                 throw_custom_error(404, `No restaurant exists with the id ${id}!`)
             }
-            console.log(`Successfully retrieved restaurant by name ${restaurant._id.$oid}`);
+            console.log(`Successfully retrieved restaurant by id ${id}`);
             return restaurant;
         });
 };

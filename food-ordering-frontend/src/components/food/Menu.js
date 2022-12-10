@@ -56,7 +56,7 @@ export const Menu = (props) => {
                 })
             :
             allFoods.length > 0 ?
-                <FoodsList data={allFoods} category={category}/>
+                <FoodsList data={allFoods} category={category} setNotification={setNotification}/>
                 :
                 <p>No foods exist in the category {category}!</p>
     }
