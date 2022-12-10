@@ -1,4 +1,4 @@
-import {BASE_URL, customError} from "./Utils";
+import {BASE_URL, customError, getSessionItem, isAdmin, isLoggedIn, removeSessionItem, SESSION_KEY} from "./utils";
 import axios from "axios";
 
 const ORDERS_URL = BASE_URL + "/orders";
@@ -43,13 +43,13 @@ export function validateCartContent(cartContent) {
 }
 
 export function createOrder(orderData) {
-    const customer = sessionStorage.getItem('user');
-    if (customer === null) {
+    if (!isLoggedIn()) {
         throw customError("Creating the order failed!", `No logged in user!`);
     }
-    if (customer.role !== "CUSTOMER") {
+    if (isAdmin()) {
         throw customError("Not authorized!", "Only customers can create an order!");
     }
+    const customer = getSessionItem(SESSION_KEY.USER_KEY);
 
     if (orderData.items.length === 0) {
         throw customError("Cannot create an order with 0 items!");
@@ -61,13 +61,14 @@ export function createOrder(orderData) {
         throw customError("Total price cannot be negative!");
     }
 
-    orderData["customer"] = customer;
+    orderData["customer"] = customer.credentials.username;
     orderData["restaurant"] = orderData.items.map(item => item.food.restaurant)[0];
 
     return axios.post(ORDERS_URL, orderData)
         .then(result => {
             const data = result.data;
             console.log(`Successfully created order with id ${data._id} for customer ${customer.credentials.username}!`);
+            removeSessionItem(SESSION_KEY.CART_KEY);
             return data;
         })
         .catch(error => {

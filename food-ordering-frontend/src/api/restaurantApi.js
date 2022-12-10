@@ -1,5 +1,5 @@
 import axios from "axios";
-import {BASE_URL, customError} from "./Utils";
+import {BASE_URL, customError, getSessionItem, isAdmin, isLoggedIn, SESSION_KEY, setSessionItem} from "./utils";
 
 const RESTAURANTS_URL = BASE_URL + "/restaurants";
 
@@ -96,23 +96,49 @@ export function getRestaurantsByTags(tags) {
 }
 
 export function addRestaurant(restaurantData) {
-    const owner = sessionStorage.getItem('user');
-    if(owner === null) {
+    if(!isLoggedIn()) {
         throw customError("Adding restaurant failed!", `No logged in user!`);
     }
-    if(owner.role !== "ADMIN") {
+    if(!isAdmin()) {
         throw customError("Not authorized!", "Only admins can add a restaurant!");
     }
+    const owner = getSessionItem(SESSION_KEY.USER_KEY);
     restaurantData["owner"] = owner.credentials.username;
+
     return axios.post(RESTAURANTS_URL, restaurantData)
         .then(result => {
             const data = result.data;
             console.log(`Successfully added restaurant ${data.name}!`);
-            sessionStorage.setItem("restaurant", JSON.stringify(data));
+            setSessionItem(SESSION_KEY.RESTAURANT_KEY, data);
             return data;
         })
         .catch(error => {
             console.log(error.message);
-            throw customError("Insert failed!", `Failed to add restaurant ${restaurantData.name}!`);
+            throw customError("Saving failed!", `Failed to add restaurant ${restaurantData.name}!`);
+        })
+}
+
+export function editRestaurant(restaurantData) {
+    if(!isLoggedIn()) {
+        throw customError("Editing restaurant failed!", `No logged in user!`);
+    }
+    if(!isAdmin()) {
+        throw customError("Not authorized!", "Only the admin can edit the restaurant!");
+    }
+    const owner = getSessionItem(SESSION_KEY.USER_KEY);
+    restaurantData["owner"] = owner.credentials.username;
+    const id = getSessionItem(SESSION_KEY.RESTAURANT_KEY)._id;
+    restaurantData["_id"] = id;
+
+    return axios.post(RESTAURANTS_URL, restaurantData)
+        .then(result => {
+            const data = result.data;
+            console.log(`Successfully updated restaurant ${data.name}!`);
+            setSessionItem(SESSION_KEY.RESTAURANT_KEY, data);
+            return data;
+        })
+        .catch(error => {
+            console.log(error.message);
+            throw customError("Saving failed!", `Failed to update restaurant ${restaurantData.name}!`);
         })
 }

@@ -6,7 +6,7 @@ import {FormErrorMessage} from "../FormErrorMesage";
 import {AddressInput} from "../cart/AddressInput";
 import {addRestaurant} from "../../api/restaurantApi";
 
-export const AddRestaurant = () => {
+export const EditableRestaurant = () => {
     const [name, setName] = useState("");
     const [deliveryFee, setDeliveryFee] = useState(0);
     const [rating, setRating] = useState(0);
@@ -35,7 +35,7 @@ export const AddRestaurant = () => {
             schedule: schedule,
             rating: rating
         }
-        addRestaurant(form)
+        editRestaurant(form)
             .then(() => {
                 navigate("/");
             })

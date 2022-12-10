@@ -5,15 +5,20 @@ import {Button, Form} from "react-bootstrap";
 import {AddressInput} from "../components/cart/AddressInput";
 import {Notification, NOTIFICATION_TYPES} from "../components/Notification";
 import {createOrder} from "../api/ordersApi";
+import {getSessionItem, SESSION_KEY, setSessionItem} from "../api/utils";
 
 const initCartContent = () => {
-    const content = JSON.parse(sessionStorage.getItem('cartContent'));
+    const content = getSessionItem(SESSION_KEY.CART_KEY);
     return content !== null ? content : [];
 }
 
 export const Cart = () => {
     const [cartContent, setCartContent] = useState(() => initCartContent())
-    const [address, setAddress] = useState({});
+    const [address, setAddress] = useState({
+        city: "",
+        street: "",
+        nr: -1
+    });
     const [totalPrice, setTotalPrice] = useState(0);
     const [notification, setNotification] = useState({
         show: false,
@@ -24,10 +29,17 @@ export const Cart = () => {
 
     const onCreateOrder = (e) => {
         e.preventDefault();
+        const isAddressPresent = address.city.length > 0 && address.street.length > 0 && address.nr.length > 0;
+        if (isAddressPresent) {
+            setAddress({
+                ...address,
+                nr: parseInt(address.nr)
+            });
+        }
         let orderData = {
             items: cartContent,
-            address: address,
-            totalPrice: totalPrice
+            totalPrice: totalPrice,
+            delivery_address: isAddressPresent ? address : null,
         }
         createOrder(orderData)
             .then(data => {
@@ -54,7 +66,7 @@ export const Cart = () => {
         const name = e.target.name;
         setAddress({
             ...address,
-            [name]: name === "nr" ? parseInt(value) : value
+            [name]: value
         });
     }
 
@@ -74,14 +86,10 @@ export const Cart = () => {
         setCartContent(newContent);
     }
 
-    const calculateTotalPrice = (items) => {
-        return items.reduce((sum, item) => item.food.price * item.quantity + sum, 0);
-    }
-
     useEffect(() => {
-        const total = calculateTotalPrice(cartContent);
+        const total = cartContent.reduce((sum, item) => item.food.price * item.quantity + sum, 0);
         setTotalPrice(total);
-        sessionStorage.setItem('cartContent', JSON.stringify(cartContent));
+        setSessionItem(SESSION_KEY.CART_KEY, cartContent);
     }, [cartContent, setCartContent]);
 
     return (
@@ -93,7 +101,7 @@ export const Cart = () => {
                              onUpdate={onUpdateItem}
                              onRemove={onRemoveItem}/>
                 <p>Total price: {totalPrice}</p>
-                <p>Enter the delivery address:</p>
+                <p>Set a different delivery address than the home address:</p>
                 <AddressInput onInputChange={onAddressChange}/>
                 <Button type={"submit"} variant={"success"} className={"mt-3 w-100"}>Create order</Button>
             </Form>

@@ -1,4 +1,4 @@
-import {BASE_URL, customError} from "./Utils";
+import {BASE_URL, customError} from "./utils";
 import axios from "axios";
 
 const FOODS_URL = BASE_URL + "/foods";

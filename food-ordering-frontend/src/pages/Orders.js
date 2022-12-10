@@ -2,14 +2,13 @@ import React, {useState} from "react";
 import {Header} from "../components/Header";
 import {OrdersList} from "../components/order/OrdersList";
 import {getOrdersByCustomer, getOrdersByRestaurant} from "../api/ordersApi";
-import {getRestaurantByOwner} from "../api/restaurantApi";
 import {Notification, NOTIFICATION_TYPES} from "../components/Notification";
+import {getSessionItem, isAdmin, isLoggedIn, SESSION_KEY} from "../api/utils";
 
 export const Orders = () => {
     const [notification, setNotification] = useState({show: false, message: "", type: NOTIFICATION_TYPES.ERROR});
     const [orders, setOrders] = useState(() => {
-        const user = sessionStorage.getItem("user");
-        if (user === null) {
+        if (!isLoggedIn()) {
             setNotification({
                 show: true,
                 message: "No logged in user!",
@@ -18,17 +17,10 @@ export const Orders = () => {
             });
             return [];
         }
-        if (user.role === "ADMIN") {
-            return getRestaurantByOwner(user.username)
-                .then(restaurant =>
-                    getOrdersByRestaurant(restaurant.name)
-                        .then(data => setOrders(data))
-                        .catch(error => setNotification({
-                            show: true,
-                            message: error.message,
-                            details: error.details,
-                            type: NOTIFICATION_TYPES.ERROR
-                        })))
+        if (isAdmin()) {
+            const restaurant = getSessionItem(SESSION_KEY.RESTAURANT_KEY);
+            getOrdersByRestaurant(restaurant.name)
+                .then(data => setOrders(data))
                 .catch(error => setNotification({
                     show: true,
                     message: error.message,
@@ -36,7 +28,8 @@ export const Orders = () => {
                     type: NOTIFICATION_TYPES.ERROR
                 }));
         }
-        return getOrdersByCustomer(user.username)
+        const user = getSessionItem(SESSION_KEY.USER_KEY);
+        return getOrdersByCustomer(user.credentials.username)
             .then(data => setOrders(data))
             .catch(error => setNotification({
                 show: true,
