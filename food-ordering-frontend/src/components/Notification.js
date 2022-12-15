@@ -1,10 +1,10 @@
 import {useEffect, useState} from "react";
-import {Modal} from "react-bootstrap";
+import {Toast} from "react-bootstrap";
 
 export const NOTIFICATION_TYPES = {
-    INFO: 'bg-success',
-    ERROR: 'bg-danger',
-    WARNING: 'bg-warning'
+    INFO: 'success',
+    ERROR: 'danger',
+    WARNING: 'warning'
 }
 
 export const Notification = (props) => {
@@ -15,17 +15,15 @@ export const Notification = (props) => {
     }, [props.data.show]);
 
     return (
-        <Modal onHide={() => setShow(false)} show={show}>
-            <Modal.Header closeButton className={props.data.type}>
-                <Modal.Title>{props.data.message}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                {props.data.details ?
+        <Toast onClose={() => setShow(false)} show={show}
+               bg={props.data.type} className={"mb-3 mt-3"}>
+            <Toast.Header closeButton className={"me-auto"}>{props.data.message}</Toast.Header>
+            {props.data.details ?
+                <Toast.Body>
                     <p>{props.data.details}</p>
-                    :
-                    <div/>}
-            </Modal.Body>
-
-        </Modal>
+                </Toast.Body>
+                :
+                <div/>}
+        </Toast>
     )
 }

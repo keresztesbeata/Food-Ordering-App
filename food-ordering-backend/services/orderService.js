@@ -66,7 +66,7 @@ exports.find_by_customer = (customer_name) => {
                         }
                     }, {
                         $sort: {
-                            order_date: 1
+                            order_date: -1
                         }
                     }])
                 .then(orders => {
