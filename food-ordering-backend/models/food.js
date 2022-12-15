@@ -14,15 +14,6 @@ const FoodSchema = new Schema({
     },
     category: {
         type: String,
-        enum: [
-            'Appetizers',
-            'Salad',
-            'Soup',
-            'Main',
-            'Pizza',
-            'Pasta',
-            'Dessert'
-        ],
         required: [true, "You must specify the category of the food!"]
     },
     ingredients: {

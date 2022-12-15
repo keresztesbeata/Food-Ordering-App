@@ -51,3 +51,17 @@ export function getFoodsByRestaurantAndIngredients(restaurantName, ingredients) 
             throw customError( `Failed to fetch foods for restaurant ${restaurantName} and ingredients list ${ingredients}!`, error.response.data);
         });
 }
+
+export function getCategoriesList() {
+    const url = BASE_URL + "/categories";
+    return axios.get(url)
+        .then(result => {
+            const data = result.data;
+            console.log(`Successfully retrieved ${data.length} categories!`);
+            return data;
+        })
+        .catch(error => {
+            console.log(error.response.data);
+            throw customError( `Failed to fetch categories!`, error.response.data);
+        });
+}

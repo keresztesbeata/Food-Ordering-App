@@ -10,6 +10,7 @@ const usersRouter = require('./routes/userRoutes');
 const restaurantsRouter = require('./routes/restaurantRoutes');
 const foodsRouter = require('./routes/foodRoutes');
 const ordersRouter = require('./routes/orderRoutes');
+const commonsRouter = require('./routes/commonRoutes');
 const initDb = require("./database/dbConnection").initDb;
 
 const app = express();
@@ -31,6 +32,7 @@ app.use('/users', usersRouter);
 app.use('/restaurants', restaurantsRouter);
 app.use('/foods', foodsRouter);
 app.use('/orders', ordersRouter);
+app.use('/categories', commonsRouter);
 
 initDb(function (err) {
     if (err) {

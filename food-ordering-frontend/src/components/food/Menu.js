@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Button, Dropdown, FormControl, InputGroup} from "react-bootstrap";
 import {FoodsList} from "./FoodsList";
 import {
+    getCategoriesList,
     getFoodsByRestaurant,
     getFoodsByRestaurantAndCategory,
     getFoodsByRestaurantAndIngredients
@@ -13,8 +14,23 @@ export const Menu = (props) => {
     const [category, setCategory] = useState("All");
     const [allFoods, setAllFoods] = useState([]);
     const [ingredients, setIngredients] = useState("");
-    const allCategories = ["All", "Appetizers", "Pizza", "Pasta", "Soup", "Dessert", "Main"];
+    const [allCategories, setAllCategories] = useState(["All"]);
     const [notification, setNotification] = useState({show: false, message: "", details: "", type: NOTIFICATION_TYPES.ERROR});
+
+    const listAllCategories = () => {
+        getCategoriesList()
+            .then(data => setAllCategories(data))
+            .catch(error => setNotification({
+                show: true,
+                message: error.message,
+                details: error.details,
+                type: NOTIFICATION_TYPES.ERROR
+            }));
+    }
+
+    useEffect(() => {
+        listAllCategories();
+    }, [props]);
 
     const selectAllFoodsOfRestaurant = () => {
         if (props.restaurant !== null) {
