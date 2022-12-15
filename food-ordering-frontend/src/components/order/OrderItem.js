@@ -22,7 +22,7 @@ export const OrderItem = (props) => {
                         ID: {props.data._id} - date: {formatDate(props.data.order_date)}, total: {props.data.total_price}
                     </Accordion.Header>
                     <Accordion.Body>
-                        <p>Customer: {props.data.customer}</p>
+                        <p>Customer: {props.data.customer.firstname + " " + props.data.customer.lastname}</p>
                         <p>Restaurant: {props.data.restaurant}</p>
                         <p>Date: {formatDate(props.data.order_date)}</p>
                         <p>Address: {props.data.delivery_address.city}, {props.data.delivery_address.street}, {props.data.delivery_address.nr}</p>

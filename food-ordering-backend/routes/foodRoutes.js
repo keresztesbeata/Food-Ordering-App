@@ -15,6 +15,12 @@ router.get('/:restaurant/category/:category', food_controller.food_list_by_categ
 router.post('/:restaurant/ingredients', food_controller.food_list_by_ingredients);
 
 /* Add a new food */
-router.post('/:restaurant', food_controller.food_bulk_create);
+router.post('/:restaurant', food_controller.food_create);
+
+/* Update food */
+router.post('/id/:id', food_controller.food_edit);
+
+/* Delete food */
+router.delete('/id/:id', food_controller.food_delete);
 
 module.exports = router;

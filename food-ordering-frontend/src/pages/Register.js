@@ -2,7 +2,7 @@ import {useState} from "react";
 import {Button, Form, FormControl, FormGroup, FormLabel, FormSelect} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
 import {register} from "../api/usersApi";
-import {FormErrorMessage} from "../components/FormErrorMesage";
+import {FormMessage} from "../components/FormMesage";
 
 export const Register = () => {
     const [form, setForm] = useState({
@@ -31,7 +31,7 @@ export const Register = () => {
                     navigate("/add_customer_info");
                 }
             })
-            .catch(error => setErrorMessage({message: error.message, details: error.details}));
+            .catch(error => setErrorMessage({message: error.message, details: error.details, isError: true}));
     };
 
     return (
@@ -39,14 +39,14 @@ export const Register = () => {
             <div className="card col-sm-3 border-dark text-left">
                 <Form onSubmit={onSubmitForm} className={"card-body"}>
                     <h1>Register</h1>
-                    <FormErrorMessage error={errorMessage}/>
+                    <FormMessage data={errorMessage}/>
                     <FormGroup className={"mb-3"}>
                         <FormLabel>Username</FormLabel>
                         <FormControl type={"text"} name={"username"} onChange={onInputChange} required></FormControl>
                     </FormGroup>
                     <FormGroup className={"mb-3"}>
                         <FormLabel>Password</FormLabel>
-                        <FormControl type={"text"} name={"password"} onChange={onInputChange} required></FormControl>
+                        <FormControl type={"password"} name={"password"} onChange={onInputChange} required></FormControl>
                     </FormGroup>
                     <FormGroup className="mb-3" controlId="2">
                         <FormLabel>Role</FormLabel>

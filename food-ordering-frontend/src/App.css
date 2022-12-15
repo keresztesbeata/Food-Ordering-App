@@ -12,3 +12,28 @@
 .error-text {
     color: red;
 }
+
+.success-text {
+    color: #28ad89;
+}
+
+.table-container {
+    margin: 2%;
+}
+
+.nav-links a{
+    color: #137769;
+}
+
+.nav-links a:hover{
+    color: #137769;
+    border-color: #137769;
+    border-bottom: 2px solid;
+}
+
+.nav-links a:hover{
+    color: #137769;
+    font-size: large;
+    border-color: #137769;
+    border-bottom: 2px solid;
+}

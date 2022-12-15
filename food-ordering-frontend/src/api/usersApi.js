@@ -25,9 +25,8 @@ export function login(username, password) {
             console.log(`Successfully logged in user ${data.credentials.username}!`);
             setSessionItem(SESSION_KEY.USER_KEY, data);
             if (isAdmin()) {
-                getRestaurantByOwner(data.credentials.username)
-                    .then(result => {
-                        const restaurant = result.data;
+                getRestaurantByOwner(data._id)
+                    .then(restaurant => {
                         setSessionItem(SESSION_KEY.RESTAURANT_KEY, restaurant);
                     });
             }
@@ -53,7 +52,7 @@ export function register(userData) {
         });
 }
 
-export function editUser(userData) {
+export function editUser(id, userData) {
     if (!isLoggedIn()) {
         throw customError("Updating user failed!", `No logged in user!`);
     }
@@ -61,7 +60,7 @@ export function editUser(userData) {
         throw customError("Not authorized!", "Only customers can add personal information to their accounts!");
     }
     const loggedInUser = getSessionItem(SESSION_KEY.USER_KEY);
-    const url = USERS_URL + loggedInUser._id;
+    const url = USERS_URL + "/id/" + loggedInUser._id;
     return axios.post(url, userData)
         .then(result => {
             const data = result.data;

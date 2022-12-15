@@ -1,12 +1,15 @@
 import React from "react";
-import {EditableRestaurant} from "../components/restaurant/EditableRestaurant";
 import {getSessionItem, SESSION_KEY} from "../api/utils";
+import {RestaurantForm} from "../components/restaurant/RestaurantForm";
+
+const restaurant = getSessionItem(SESSION_KEY.RESTAURANT_KEY);
 
 export const ManagerView = () => {
-    const restaurant = getSessionItem(SESSION_KEY.RESTAURANT_KEY);
     return (
-        <div>
-            <EditableRestaurant restaurant={restaurant}/>
+        <div className="background-container page-background d-flex justify-content-center align-items-center mt-5">
+            <div className="card col-sm-3 border-dark text-left">
+                <RestaurantForm restaurant={restaurant}/>
+            </div>
         </div>
     );
 };

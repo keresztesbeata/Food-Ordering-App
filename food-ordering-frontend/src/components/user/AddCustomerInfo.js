@@ -1,50 +1,36 @@
 import {Button, Form, FormControl, FormGroup, FormLabel} from "react-bootstrap";
 import React, {useState} from "react";
 import {AddressInput} from "../cart/AddressInput";
-import {useNavigate} from "react-router-dom";
 import {editUser} from "../../api/usersApi";
-import {FormErrorMessage} from "../FormErrorMesage";
+import {FormMessage} from "../FormMesage";
+import {getSessionItem, SESSION_KEY} from "../../api/utils";
 
 export const AddCustomerInfo = () => {
-    const [form, setForm] = useState({
-        firstname: "",
-        lastname: "",
-        address: {
-            city: "",
-            street: "",
-            nr: 0
-        }
-    });
+    const [firstname, setFirstname] = useState("");
+    const [lastname, setLastname] = useState("");
+    const [address, setAddress] = useState({
+        city: "",
+        street: "",
+        nr: 0
+    })
     const [errorMessage, setErrorMessage] = useState(null);
-    const navigate = useNavigate();
-
-    const onInputChange = e => {
-        const nextFormState = {
-            ...form,
-            [e.target.name]: e.target.value,
-        };
-        setForm(nextFormState);
-    };
-
-    const onAddressChange = e => {
-        const value = e.target.value;
-        const name = e.target.name;
-        setForm({
-            ...form,
-            address: {
-                [name]: name === "nr" ? parseInt(value) : value
-            }
-        });
-        setErrorMessage(null)
-    };
 
     const onSubmitForm = e => {
-        e.preventDefault();
-        editUser(form)
-            .then(() => {
-                navigate("/");
-            })
-            .catch(error => setErrorMessage({message: error.message, details: error.details}));
+        e.preventDefault()
+        const loggedInUser = getSessionItem(SESSION_KEY.USER_KEY);
+        if(loggedInUser) {
+            const id = loggedInUser._id;
+            const form = {
+                firstname: firstname,
+                lastname: lastname,
+                address: address
+            }
+            editUser(id, form)
+                .then(() => {
+                    window.location.href = "/home";
+                })
+                .catch(error => setErrorMessage({message: error.message, details: error.details, isError: true}));
+        }
     };
 
     return (
@@ -52,18 +38,18 @@ export const AddCustomerInfo = () => {
             <div className="card col-sm-3 border-dark text-left">
                 <Form onSubmit={onSubmitForm} className={"card-body"}>
                     <h1>Account setup</h1>
-                    <FormErrorMessage error={errorMessage}/>
+                    <FormMessage data={errorMessage}/>
                     <FormGroup className={"mb-3"}>
                         <FormLabel>Firstname</FormLabel>
-                        <FormControl type={"text"} name={"firstname"} onChange={onInputChange}
+                        <FormControl type={"text"} name={"firstname"} onChange={e => setFirstname(e.target.value)}
                                      required></FormControl>
                     </FormGroup>
                     <FormGroup className={"mb-3"}>
                         <FormLabel>Lastname</FormLabel>
-                        <FormControl type={"text"} name={"lastname"} onChange={onInputChange}
+                        <FormControl type={"text"} name={"lastname"} onChange={e => setLastname(e.target.value)}
                                      required></FormControl>
                     </FormGroup>
-                    <AddressInput onInputChange={onAddressChange}/>
+                    <AddressInput data={address} onInputChange={e => setAddress({...address, [e.target.name]: e.target.value})}/>
                     <div className="text-center">
                         <Button type={"submit"}>Save</Button>
                     </div>

@@ -1,7 +1,8 @@
 import {Error} from "../pages/Error";
 import {getSessionItem, SESSION_KEY} from "../api/utils";
 
-export const ProtectedComponent = (props) => {
+export const
+    ProtectedComponent = (props) => {
     const loggedInUser = getSessionItem(SESSION_KEY.USER_KEY);
     const isAuthorized = loggedInUser !== null && props.authority.includes(loggedInUser["role"]);
     return loggedInUser === null ?

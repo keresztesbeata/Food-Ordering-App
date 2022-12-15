@@ -1,16 +1,14 @@
 import {Nav, NavLink} from "react-bootstrap";
-import {useNavigate} from "react-router-dom";
 import {logout} from "../api/usersApi";
 import React from "react";
 import {isAdmin} from "../api/utils";
 
 export const Header = () => {
-    const navigate = useNavigate();
 
     const onLogOut = () => {
         try {
             logout();
-            navigate("/login");
+            window.location.href = "/login"
         } catch (err) {
             alert(err.message + err.details);
         }
@@ -18,8 +16,8 @@ export const Header = () => {
 
     return (
         <div>
-            <Nav defaultActiveKey="/" to={"/home"} className="flex-row justify-content-center">
-                <NavLink href="/home">Home</NavLink>
+            <Nav className="flex-row justify-content-center nav-links">
+                <NavLink href="/">Home</NavLink>
                 {
                     isAdmin() ?
                         <NavLink href="/menu">Menu</NavLink>

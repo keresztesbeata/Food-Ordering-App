@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {Button, Form, FormControl, InputGroup} from "react-bootstrap";
 import {BsStar} from "react-icons/bs";
 import {useNavigate} from "react-router-dom";
-import {FormErrorMessage} from "../FormErrorMesage";
+import {FormErrorMessage} from "../FormMesage";
 import {AddressInput} from "../cart/AddressInput";
 import {editRestaurant} from "../../api/restaurantApi";
 

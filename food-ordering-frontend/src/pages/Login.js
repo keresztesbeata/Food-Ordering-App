@@ -2,7 +2,7 @@ import {useState} from "react";
 import {Button, Form, FormControl, FormGroup, FormLabel} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
 import {login} from "../api/usersApi";
-import {FormErrorMessage} from "../components/FormErrorMesage";
+import {FormMessage} from "../components/FormMesage";
 
 export const Login = () => {
     const [form, setForm] = useState({
@@ -24,9 +24,9 @@ export const Login = () => {
         e.preventDefault();
         login(form.username, form.password)
             .then(() => {
-                navigate("/")
+                window.location.href="/home"
             })
-            .catch(error => setErrorMessage({message:error.message, details: error.details}));
+            .catch(error => setErrorMessage({message: error.message, details: error.details, isError: true}));
     };
 
     return (
@@ -34,17 +34,17 @@ export const Login = () => {
             <div className="card col-sm-3 border-dark text-left">
                 <Form onSubmit={onSubmitForm} className={"card-body"}>
                     <h1>Login</h1>
-                    <FormErrorMessage error={errorMessage}/>
+                    <FormMessage data={errorMessage}/>
                     <FormGroup className={"mb-3"}>
                         <FormLabel>Username</FormLabel>
                         <FormControl type={"text"} name={"username"} onChange={onInputChange} required></FormControl>
                     </FormGroup>
                     <FormGroup className={"mb-3"}>
                         <FormLabel>Password</FormLabel>
-                        <FormControl type={"text"} name={"password"} onChange={onInputChange} required></FormControl>
+                        <FormControl type={"password"} name={"password"} onChange={onInputChange} required></FormControl>
                     </FormGroup>
                     <div className="text-center">
-                        <Button type={"submit"}>Login</Button>
+                        <Button type={"submit"} variant={"success"}>Login</Button>
                     </div>
                     <center>
                         Don't have an account?

@@ -1,20 +1,28 @@
 import React from "react";
 import {Header} from "../components/Header";
-import {RestaurantMenu} from "../components/restaurant/RestaurantMenu";
-import {isAdmin} from "../api/utils";
+import {isAdmin, isLoggedIn} from "../api/utils";
 import {ManagerView} from "./ManagerView";
+import {CustomerView} from "./CustomerView";
+import {Login} from "./Login";
 
 export const Home = () => {
     return (
-        isAdmin() ?
-            <div>
-                <Header/>
-                <ManagerView/>
-            </div>
-            :
-            <div>
-                <Header/>
-                <RestaurantMenu/>
-            </div>
+        <div>
+            {
+                isAdmin() ?
+                    <div>
+                        <Header/>
+                        <ManagerView/>
+                    </div>
+                    :
+                    isLoggedIn() ?
+                        <div>
+                            <Header/>
+                            <CustomerView/>
+                        </div>
+                        :
+                        <Login/>
+            }
+        </div>
     );
 };

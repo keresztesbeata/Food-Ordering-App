@@ -73,11 +73,9 @@ exports.insert_user = (user_data) => {
 };
 
 exports.update_user = (id, user_data) => {
+    console.log(id)
     return this.find_by_id(id)
         .then(user => {
-            if (user === null) {
-                throw_custom_error(404, `No user exists with the id ${id}!`);
-            }
             user.firstname = user_data.firstname;
             user.lastname = user_data.lastname;
             user.address = user_data.address

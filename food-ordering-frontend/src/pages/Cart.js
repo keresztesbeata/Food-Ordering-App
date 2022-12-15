@@ -92,7 +92,7 @@ export const Cart = () => {
                              onRemove={onRemoveItem}/>
                 <p>Total price: {totalPrice}</p>
                 <p>Set a different delivery address than the home address:</p>
-                <AddressInput onInputChange={onAddressChange} data={deliveryAddress}/>
+                <AddressInput onInputChange={onAddressChange} address={deliveryAddress}/>
                 <Button type={"submit"} variant={"success"} className={"mt-3 w-100"}>Create order</Button>
             </Form>
         </div>

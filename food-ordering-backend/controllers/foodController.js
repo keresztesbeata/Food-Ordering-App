@@ -60,3 +60,24 @@ exports.food_bulk_create = (req, res) => {
         })
         .catch((err) => handle_error(err, res));
 }
+
+exports.food_edit = (req, res) => {
+    service.edit_food(req.params.id, req.body)
+        .then(food => {
+            res
+                .status(200)
+                .json(food);
+        })
+        .catch((err) => handle_error(err, res));
+}
+
+exports.food_delete = (req, res) => {
+    service.delete_food(req.params.id)
+        .then(food => {
+            res
+                .status(200)
+                .json(food);
+        })
+        .catch((err) => handle_error(err, res));
+}
+

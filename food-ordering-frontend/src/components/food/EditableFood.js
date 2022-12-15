@@ -1,12 +1,12 @@
 import React, {useState} from "react";
 import {Button, Dropdown, Form, FormControl, InputGroup} from "react-bootstrap";
 
-export const AddFood = (props) => {
-    const [name, setName] = useState("");
-    const [ingredients, setIngredients] = useState("");
-    const [portionSize, setPortionSize] = useState(0);
-    const [price, setPrice] = useState(0);
-    const [category, setCategory] = useState("");
+export const EditableFood = (props) => {
+    const [name, setName] = useState(props.food.name);
+    const [ingredients, setIngredients] = useState(props.food.ingredients);
+    const [portionSize, setPortionSize] = useState(props.food.portionSize);
+    const [price, setPrice] = useState(props.food.price);
+    const [category, setCategory] = useState(props.food.category);
     const [allCategories, setAllCategories] = useState(props.categories);
 
     const displayCategories = () => {

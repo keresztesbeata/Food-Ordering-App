@@ -118,15 +118,13 @@ export function addRestaurant(restaurantData) {
         })
 }
 
-export function editRestaurant(restaurantData) {
+export function editRestaurant(id, restaurantData) {
     if (!isLoggedIn()) {
         throw customError("Editing restaurant failed!", `No logged in user!`);
     }
     if (!isAdmin()) {
         throw customError("Not authorized!", "Only the admin can edit the restaurant!");
     }
-    const id = getSessionItem(SESSION_KEY.RESTAURANT_KEY)._id;
-    console.log(id)
     const url = RESTAURANTS_URL + "/id/" + id;
 
     return axios.post(url, restaurantData)

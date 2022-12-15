@@ -42,10 +42,10 @@ exports.user_register = (req, res) => {
 }
 
 exports.user_edit = (req, res) => {
-    return service.update_user(req.param.id, req.body)
+    return service.update_user(req.params.id, req.body)
         .then(user => {
             res
-                .status(201)
+                .status(200)
                 .json(user);
         })
         .catch((err) => handle_error(err, res));

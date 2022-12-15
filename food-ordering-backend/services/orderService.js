@@ -26,9 +26,49 @@ exports.find_by_customer = (customer_name) => {
             if (customer === null) {
                 throw_custom_error(404, `No customer exists with the username ${customer_name}!`)
             }
-            return Order.find({customer: customer._id})
-                // list the most recent orders first
-                .sort([["order_date", -1]])
+            return Order
+                // .find({customer: customer._id})
+                .aggregate([
+                    {
+                        $lookup: {
+                            from: "restaurants",
+                            localField: "restaurant",
+                            foreignField: "_id",
+                            as: "restaurant"
+                        }
+                    }, {
+                        $unwind: {
+                            path: "$restaurant"
+                        }
+                    },
+                    {
+                        $lookup: {
+                            from: "users",
+                            localField: "customer",
+                            foreignField: "_id",
+                            as: "customer"
+                        }
+                    }, {
+                        $unwind: {
+                            path: "$customer"
+                        }
+                    }, {
+                        $project: {
+                            customer: {
+                                firstname: 1,
+                                lastname: 1,
+                            },
+                            restaurant: "$restaurant.name",
+                            items: 1,
+                            total_price: 1,
+                            delivery_address: 1,
+                            order_date: 1
+                        }
+                    }, {
+                        $sort: {
+                            order_date: 1
+                        }
+                    }])
                 .then(orders => {
                     console.log(`Successfully retrieved ${orders.length} orders belonging to the customer ${customer.username}`);
                     return orders;
@@ -48,6 +88,7 @@ exports.insert_order = (order_data) => {
                     if (order_data.delivery_address === null) {
                         order_data.delivery_address = user.address;
                     }
+
                     console.log(order_data);
                     // add the delivery fee
                     order_data.total_price += 1.0 * foundRestaurant.delivery_fee;
