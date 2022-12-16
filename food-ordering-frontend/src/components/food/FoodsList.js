@@ -69,7 +69,7 @@ export const FoodsList = (props) => {
         <div className={"flex-column gap-2"}>
             <h2>{props.category}</h2>
             <hr/>
-            <Row sm={"3"} className="align-items-stretch justify-content-start">
+            <Row sm={"4"} className="align-items-stretch justify-content-start">
                 {props.data.map(displayFoodItem)}
             </Row>
         </div>

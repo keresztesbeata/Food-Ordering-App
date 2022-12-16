@@ -19,11 +19,11 @@ exports.find_by_restaurant = (restaurant_name) => {
         .then(restaurant => {
             return Food.find({restaurant: restaurant._id})
                 .then(foods => {
-                    console.log(`Successfully retrieved ${foods.length} foods`);
+                    console.log(`Successfully retrieved ${foods.length} foods.`);
                     return foods;
                 })
-        });
-};
+        })
+}
 
 exports.find_by_restaurant_and_name = (restaurant_name, name) => {
     return restaurant_service.find_by_name(restaurant_name)
