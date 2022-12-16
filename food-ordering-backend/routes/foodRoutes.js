@@ -17,6 +17,9 @@ router.post('/:restaurant/ingredients', food_controller.food_list_by_ingredients
 /* Add a new food */
 router.post('/:restaurant', food_controller.food_create);
 
+/* Add multiple new food */
+router.post('/:restaurant/bulk', food_controller.food_bulk_create);
+
 /* Update food */
 router.post('/id/:id', food_controller.food_edit);
 

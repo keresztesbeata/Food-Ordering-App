@@ -6,7 +6,8 @@ export const FoodItem = (props) => {
     return (
         <Card className={"border-dark"}>
             <Card.Img variant="top"
-                      src={require("../../images/"+props.data.category+"/empty.jpg")}/>
+                      src={require("../../images/"+props.data.category+"/"+props.data.image_url)}
+            width={80} height={250} he/>
             <Card.Body>
                 <div className={"d-flex justify-content-between"}>
                     <div>

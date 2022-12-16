@@ -31,6 +31,10 @@ const FoodSchema = new Schema({
         min: [0.001, "Portion size must be a positive real number"],
         required: [true, "You must specify the portion_size of the food!"]
     },
+    image_url: {
+        type: String,
+        default: "empty.jpg"
+    }
 });
 
 // Compile models from schema
