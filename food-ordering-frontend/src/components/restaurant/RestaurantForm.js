@@ -7,7 +7,7 @@ import {addRestaurant, editRestaurant} from "../../api/restaurantApi";
 
 export const RestaurantForm = (props) => {
     const [id, setId] = useState(null);
-    const [name, setName] = useState("");
+    const [name, setName] = useState(null);
     const [deliveryFee, setDeliveryFee] = useState(0);
     const [rating, setRating] = useState(0);
     const [address, setAddress] = useState({
@@ -17,7 +17,7 @@ export const RestaurantForm = (props) => {
     });
     const [schedule, setSchedule] = useState({
         opening_hour: 0,
-        closing_hour: 0
+        closing_hour: 1
     });
     const [tags, setTags] = useState([]);
     const [formMessage, setFormMessage] = useState(null);

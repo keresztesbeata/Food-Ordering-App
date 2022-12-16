@@ -49,7 +49,7 @@ export const AddCustomerInfo = () => {
                         <FormControl type={"text"} name={"lastname"} onChange={e => setLastname(e.target.value)}
                                      required></FormControl>
                     </FormGroup>
-                    <AddressInput data={address} onInputChange={e => setAddress({...address, [e.target.name]: e.target.value})}/>
+                    <AddressInput address={address} onInputChange={e => setAddress({...address, [e.target.name]: e.target.value})}/>
                     <div className="text-center">
                         <Button type={"submit"}>Save</Button>
                     </div>

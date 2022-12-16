@@ -10,16 +10,10 @@ export const Home = () => {
         <div>
             {
                 isAdmin() ?
-                    <div>
-                        <Header/>
                         <ManagerView/>
-                    </div>
                     :
                     isLoggedIn() ?
-                        <div>
-                            <Header/>
                             <CustomerView/>
-                        </div>
                         :
                         <Login/>
             }

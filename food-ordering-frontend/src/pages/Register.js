@@ -57,7 +57,7 @@ export const Register = () => {
                         </FormSelect>
                     </FormGroup>
                     <div className="text-center">
-                        <Button type={"submit"}>Register</Button>
+                        <Button type={"submit"} variant={"success"}>Register</Button>
                     </div>
                     <center>
                         Already have an account?

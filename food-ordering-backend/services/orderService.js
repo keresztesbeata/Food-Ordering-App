@@ -10,9 +10,53 @@ exports.find_by_restaurant = (restaurant_name) => {
             if (restaurant === null) {
                 throw_custom_error(404, `No restaurant exists with the name ${restaurant_name}!`)
             }
-            return Order.find({restaurant: restaurant._id})
-                // list the most recent orders first
-                .sort([["order_date", -1]])
+            return Order
+                .aggregate([
+                    {
+                        $match: {
+                            restaurant: restaurant._id
+                        }
+                    },
+                    {
+                        $lookup: {
+                            from: "restaurants",
+                            localField: "restaurant",
+                            foreignField: "_id",
+                            as: "restaurant"
+                        }
+                    }, {
+                        $unwind: {
+                            path: "$restaurant"
+                        }
+                    },
+                    {
+                        $lookup: {
+                            from: "users",
+                            localField: "customer",
+                            foreignField: "_id",
+                            as: "customer"
+                        }
+                    }, {
+                        $unwind: {
+                            path: "$customer"
+                        }
+                    }, {
+                        $project: {
+                            customer: {
+                                firstname: 1,
+                                lastname: 1,
+                            },
+                            restaurant: "$restaurant.name",
+                            items: 1,
+                            total_price: 1,
+                            delivery_address: 1,
+                            order_date: 1
+                        }
+                    }, {
+                        $sort: {
+                            order_date: -1
+                        }
+                    }])
                 .then(orders => {
                     console.log(`Successfully retrieved ${orders.length} orders belonging to the restaurant ${restaurant_name}`);
                     return orders;
@@ -27,8 +71,12 @@ exports.find_by_customer = (customer_name) => {
                 throw_custom_error(404, `No customer exists with the username ${customer_name}!`)
             }
             return Order
-                // .find({customer: customer._id})
                 .aggregate([
+                    {
+                        $match: {
+                            customer: customer._id
+                        }
+                    },
                     {
                         $lookup: {
                             from: "restaurants",

@@ -44,6 +44,12 @@ export const RestaurantMenu = () => {
     }
 
     useEffect(() => {
+        if (tags.length === 0) {
+            selectAllRestaurants();
+        }
+    }, [tags, setTags]);
+
+    useEffect(() => {
         if (name.length > 0) {
             getRestaurantByName(name)
                 .then(data => setRestaurant(data))

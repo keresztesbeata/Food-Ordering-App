@@ -10,6 +10,8 @@ import {RestaurantForm} from "../components/restaurant/RestaurantForm";
 import {ProtectedComponent} from "../components/ProtectedComponent";
 import {isLoggedIn, USER_ROLE} from "../api/utils";
 import {ManagerFoodCatalogue} from "../pages/ManagerFoodCatalogue";
+import {SetupRestaurant} from "../pages/SetupRestaurant";
+import {ManagerView} from "../pages/ManagerView";
 
 
 export const Router = () => {
@@ -24,7 +26,7 @@ export const Router = () => {
                 <Route path="/add_customer_info"
                        element={<ProtectedComponent component={<AddCustomerInfo/>} authority={[USER_ROLE.CUSTOMER]}/>}/>
                 <Route path="/add_restaurant"
-                       element={<ProtectedComponent component={<RestaurantForm/>} authority={[USER_ROLE.ADMIN]}/>}/>
+                       element={<ProtectedComponent component={<ManagerView/>} authority={[USER_ROLE.ADMIN]}/>}/>
                 <Route path="/menu"
                        element={<ProtectedComponent component={<ManagerFoodCatalogue/>}
                                                     authority={[USER_ROLE.ADMIN]}/>}/>

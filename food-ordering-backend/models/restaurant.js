@@ -22,7 +22,7 @@ const RestaurantSchema = new Schema({
         type: Object,
         properties: {
             opening_hour: {type: Number, min: 0, max: 23},
-            closing_hour: {type: Number, min: 0, max: 23}
+            closing_hour: {type: Number, min: 1, max: 23}
         },
         required: [true, "You must specify the schedule of the restaurant!"]
     },
